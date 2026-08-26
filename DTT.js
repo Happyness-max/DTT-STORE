@@ -13,6 +13,12 @@ function formatMoney(value) {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency: siteCurrency }).format(Number(value));
 }
 
+function refreshDisplayedPrices() {
+    document.querySelectorAll('[data-price]').forEach(element => {
+        element.textContent = formatMoney(element.dataset.price);
+    });
+}
+
 function couponDiscount(coupon, subtotal) {
     if (!coupon) return 0;
     return coupon.discount_type === 'percentage' ? subtotal * Number(coupon.discount_value) / 100 : Math.min(subtotal, Number(coupon.discount_value));
@@ -27,6 +33,7 @@ async function loadSiteSettings() {
         siteCurrency = paymentData?.payment_currency || savedSettings.payment_currency || siteCurrency;
         paystackPublicKey = paymentData?.paystack_public_key || savedSettings.paystack_public_key || '';
         paymentsEnabled = paymentData ? Boolean(paymentData.payments_enabled) : Boolean(savedSettings.payments_enabled);
+        refreshDisplayedPrices();
         return;
     }
     if (!data) return;
@@ -34,7 +41,7 @@ async function loadSiteSettings() {
     paystackPublicKey = data.paystack_public_key || '';
     paymentsEnabled = Boolean(data.payments_enabled);
     localStorage.setItem('dttSiteSettings', JSON.stringify({ payment_currency: siteCurrency, paystack_public_key: paystackPublicKey, payments_enabled: paymentsEnabled }));
-    document.querySelectorAll('[data-price]').forEach(element => { element.textContent = formatMoney(element.dataset.price); });
+    refreshDisplayedPrices();
     if (data.seo_title) document.title = data.seo_title;
     const heroEyebrow = document.getElementById('heroEyebrow');
     const heroTitle = document.getElementById('heroTitle');
