@@ -60,7 +60,11 @@ async function loadSiteSettings() {
         if (data.hero_button_text) heroButton.textContent = data.hero_button_text;
         if (data.hero_button_link) heroButton.href = data.hero_button_link;
     }
-    if (heroImage && data.hero_image_url) heroImage.style.backgroundImage = `linear-gradient(90deg, #dfe5d9 0%, rgba(223,229,217,.2) 42%), url('${data.hero_image_url}')`;
+    if (heroImage && data.hero_image_url) {
+        heroImage.style.backgroundImage = `linear-gradient(90deg, #dfe5d9 0%, rgba(223,229,217,.2) 42%), url('${data.hero_image_url}')`;
+        const heroImageElement = heroImage.querySelector('img');
+        if (heroImageElement) heroImageElement.src = data.hero_image_url;
+    }
     if (data.logo_url) document.querySelectorAll('.logo').forEach(logo => {
         logo.innerHTML = `<img src="${data.logo_url}" alt="${data.store_name || 'DTT'}">`;
         logo.style.setProperty('--logo-width', `${Number(data.logo_width) || 96}px`);
@@ -81,16 +85,13 @@ async function loadSiteSettings() {
     if (contactInstagram && data.contact_instagram) { contactInstagram.hidden = false; contactInstagram.href = data.contact_instagram; }
 }
 
+const DEFAULT_PRODUCT_IMAGE = 'https://placehold.co/900x1100/e8e1d4/1d2522?text=Add+product+image';
 const PRODUCTS = [
-    { id: 1, name: 'Essential cotton shirt', category: 'Fashion', price: 29.00, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85', description: 'A relaxed everyday layer made from soft, breathable cotton. Easy to wear, easy to keep.' },
-    { id: 2, name: 'Sculptural everyday vase', category: 'Decor', price: 42.00, image: 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=900&q=85', description: 'A tactile ceramic vase with a quiet silhouette, made to bring shape and warmth to your space.' },
-    { id: 3, name: 'Daily glow beauty set', category: 'Beauty', price: 36.00, image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=85', description: 'A simple three-piece routine for fresh, comfortable skin from morning through evening.' },
-    { id: 4, name: 'Minimal gold hoops', category: 'Jewelry', price: 24.00, image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=900&q=85', description: 'Lightweight hoops with a clean polished finish that works from weekday plans to late dinners.' },
-    { id: 5, name: 'Cedar and fig fragrance', category: 'Perfumes', price: 48.00, image: 'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?auto=format&fit=crop&w=900&q=85', description: 'A warm, balanced scent with crisp fig, cedarwood and a softly grounded finish.' },
-    { id: 6, name: 'Soft leather crossbody bag', category: 'Fashion', price: 64.00, image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=900&q=85', description: 'A compact leather companion with enough room for the things you reach for every day.' },
-    { id: 7, name: 'Hand-finished chocolate box', category: 'Food', price: 18.00, image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=85', description: 'A small box of beautifully finished chocolates for gifting, sharing or keeping to yourself.' },
-    { id: 8, name: 'Calm skin care trio', category: 'Beauty', price: 39.00, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=900&q=85', description: 'A gentle trio designed to leave your daily routine feeling clear, calm and uncomplicated.' }
-];
+    ['Cakes and pastries', 'Food'], ['Food trays or food bowls', 'Food'], ['Jewelry', 'Jewelry'], ['Lip gloss or lip balm', 'Beauty'],
+    ['Hair accessories', 'Accessories'], ['Dresses and outfits', 'Fashion'], ['Perfumes and body spray', 'Perfumes'], ['Wrist watches', 'Accessories'],
+    ['Room and wall decor', 'Decor'], ['Tattoo stickers', 'Accessories'], ['Money bouquet', 'Gifts'], ['Birthday and gift packages', 'Gifts'],
+    ['Face, under-eye and lip masks', 'Beauty'], ['Mini fan', 'Gadgets'], ['Water bottles and fancy cups', 'Gadgets'], ['Tripod', 'Gadgets'], ['Fancy mirrors', 'Decor']
+].map(([name, category], index) => ({ id: index + 1, name, category, price: 0, image: DEFAULT_PRODUCT_IMAGE, description: 'Add product description.' }));
 
 function setFormMessage(elementId, message, isError = true) {
     const element = document.getElementById(elementId);
@@ -594,7 +595,8 @@ document.getElementById('adminSignOut')?.addEventListener('click', async () => {
 function fetchFeaturedProducts() {
     const productGrid = document.getElementById('homeProducts');
     if (!productGrid) return;
-    PRODUCTS.slice(0, 2).forEach(product => {
+    productGrid.innerHTML = '';
+    PRODUCTS.slice(0, 4).forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.innerHTML = `
@@ -603,6 +605,20 @@ function fetchFeaturedProducts() {
             <p data-price="${product.price}">${formatMoney(product.price)}</p>
             ${productCardActions(product)}
         `;
+        productGrid.appendChild(productCard);
+    });
+    bindAddToCartButtons(productGrid);
+}
+
+function renderFeaturedProducts(catalog) {
+    const productGrid = document.getElementById('homeProducts');
+    if (!productGrid) return;
+    productGrid.innerHTML = '';
+    const featured = catalog.filter(product => product.isFeatured).slice(0, 4);
+    (featured.length ? featured : catalog.slice(0, 4)).forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.innerHTML = `<img src="${product.image}" alt="${product.name}"><h3>${product.name}</h3><p data-price="${product.price}">${formatMoney(product.price)}</p>${productCardActions(product)}`;
         productGrid.appendChild(productCard);
     });
     bindAddToCartButtons(productGrid);
@@ -644,6 +660,7 @@ async function loadProductsFromSupabase() {
             bindAddToCartButtons(productGrid);
     }
     window.DTT_PRODUCTS = products;
+    renderFeaturedProducts(products);
 }
 
 function renderDeals() {
