@@ -288,6 +288,10 @@ body:not(.auth-page) { background: var(--paper); }
 .product-card h3 { margin-top: 18px; margin-bottom: 8px; font-size: 15px; }
 .product-card p { color: var(--coral); font-weight: 700; }
 .product-button { display: inline-block; margin-bottom: 20px; color: var(--green); font-size: 11px; font-weight: 700; text-decoration: none; }
+.product-card-actions { display: flex; align-items: center; justify-content: space-between; margin: 0 18px 18px; }
+.product-card-actions .product-button { margin: 0; }
+.icon-button { display: inline-grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--green); border-radius: 50%; background: transparent; color: var(--green); font-size: 18px; line-height: 1; cursor: pointer; }
+.icon-button:hover { background: var(--green); color: white; }
 .deal-card { position: relative; }
 .deal-badge { position: absolute; top: 12px; left: 12px; z-index: 1; padding: 6px 9px; background: var(--coral); color: white; font-size: 10px; font-weight: 700; text-transform: uppercase; }
 .deal-price { display: flex; align-items: baseline; gap: 9px; }
@@ -462,6 +466,7 @@ footer p { color: #b9c0b8; font-size: 12px; }
     .category-card { min-height: 112px; padding: 16px; }
     .product-card img { height: 160px; }
     .product-card h3, .product-card p, .product-card .product-button { margin-left: 12px; margin-right: 12px; }
+    .product-card-actions { margin-left: 12px; margin-right: 12px; }
     .deal-banner { align-items: flex-start; flex-direction: column; gap: 16px; padding: 24px; }
     .product-detail-page { margin: 0 16px; padding: 30px 0 60px; }
     .product-detail { grid-template-columns: 1fr; gap: 34px; }

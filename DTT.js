@@ -566,10 +566,11 @@ function fetchFeaturedProducts() {
             <img src="${product.image}" alt="${product.name}">
             <h3>${product.name}</h3>
             <p data-price="${product.price}">${formatMoney(product.price)}</p>
-            <a href="product.html?id=${product.id}" class="product-button">View details &#8594;</a>
+            ${productCardActions(product)}
         `;
         productGrid.appendChild(productCard);
     });
+    bindAddToCartButtons(productGrid);
 }
 
 function mapDatabaseProduct(product) {
@@ -603,8 +604,9 @@ async function loadProductsFromSupabase() {
                 <img src="${product.image}" alt="${product.name}">
                 <h3>${product.name}</h3>
                 <p class="price" data-price="${product.price}">${formatMoney(product.price)}</p>
-                <a href="product.html?id=${product.id}" class="product-button">View details &#8594;</a>
+                ${productCardActions(product)}
             </div>`).join('');
+            bindAddToCartButtons(productGrid);
     }
     window.DTT_PRODUCTS = products;
 }
@@ -618,7 +620,8 @@ function renderDeals() {
         container.innerHTML = '<div class="empty-state"><p class="eyebrow">Coming soon</p><h1>Fresh offers are on the way.</h1><a href="products.html" class="hero-button">Browse products</a></div>';
         return;
     }
-    container.innerHTML = deals.map(product => `<div class="product-card deal-card"><div class="deal-badge">${product.compareAtPrice ? 'Sale' : 'Featured'}</div><img src="${product.image}" alt="${product.name}"><h3>${product.name}</h3><p class="deal-price"><strong>${formatMoney(product.price)}</strong>${product.compareAtPrice ? `<del>${formatMoney(product.compareAtPrice)}</del>` : ''}</p><a href="product.html?id=${product.id}" class="product-button">View details &#8594;</a></div>`).join('');
+    container.innerHTML = deals.map(product => `<div class="product-card deal-card"><div class="deal-badge">${product.compareAtPrice ? 'Sale' : 'Featured'}</div><img src="${product.image}" alt="${product.name}"><h3>${product.name}</h3><p class="deal-price"><strong>${formatMoney(product.price)}</strong>${product.compareAtPrice ? `<del>${formatMoney(product.compareAtPrice)}</del>` : ''}</p>${productCardActions(product)}</div>`).join('');
+    bindAddToCartButtons(container);
 }
 
 function renderCategoryProducts() {
@@ -632,7 +635,8 @@ function renderCategoryProducts() {
         container.innerHTML = '<p class="muted-copy">No products are available in this category yet.</p>';
         return;
     }
-    container.innerHTML = filtered.map(product => `<div class="product-card"><img src="${product.image}" alt="${product.name}"><h3>${product.name}</h3><p class="price" data-price="${product.price}">${formatMoney(product.price)}</p><a href="product.html?id=${product.id}" class="product-button">View details &#8594;</a></div>`).join('');
+    container.innerHTML = filtered.map(product => `<div class="product-card"><img src="${product.image}" alt="${product.name}"><h3>${product.name}</h3><p class="price" data-price="${product.price}">${formatMoney(product.price)}</p>${productCardActions(product)}</div>`).join('');
+    bindAddToCartButtons(container);
 }
 
 function getCart() {
@@ -651,6 +655,27 @@ function addToCart(productId) {
     const message = document.getElementById('cartMessage');
     if (message) message.textContent = 'Added to your cart.';
     renderCart();
+}
+
+function productCardActions(product) {
+    return `<div class="product-card-actions"><a href="product.html?id=${product.id}" class="product-button">View details &#8594;</a><button type="button" class="icon-button add-card-button" data-product-id="${product.id}" aria-label="Add ${product.name} to cart" title="Add to cart">&#43;</button></div>`;
+}
+
+function bindAddToCartButtons(container) {
+    container?.querySelectorAll('.add-card-button').forEach(button => button.addEventListener('click', () => addToCart(Number(button.dataset.productId))));
+}
+
+function enhanceStaticProductCards() {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+    grid.querySelectorAll('.product-card').forEach(card => {
+        const link = card.querySelector('a[href*="product.html?id="]');
+        if (!link || card.querySelector('.add-card-button')) return;
+        const productId = new URL(link.href, window.location.href).searchParams.get('id');
+        const product = PRODUCTS.find(item => String(item.id) === productId) || { id: productId, name: card.querySelector('h3')?.textContent || 'product' };
+        link.insertAdjacentHTML('afterend', `<button type="button" class="icon-button add-card-button" data-product-id="${product.id}" aria-label="Add ${product.name} to cart" title="Add to cart">&#43;</button>`);
+    });
+    bindAddToCartButtons(grid);
 }
 
 function saveCart(cart) {
@@ -872,6 +897,7 @@ function renderProductDetail() {
 window.onload = async function() {
     await loadSiteSettings();
     fetchFeaturedProducts();
+    enhanceStaticProductCards();
     updateCartCount(getCart().length);
     renderCart();
     renderProductDetail();
