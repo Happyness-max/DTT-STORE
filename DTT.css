@@ -264,7 +264,7 @@ body:not(.auth-page) { background: var(--paper); }
 .navbar { gap: 34px; justify-content: flex-start; padding: 0 max(24px, calc((100% - 1240px) / 2)); background: var(--ink); }
 .navbar a { padding: 15px 0; color: #f7f3e8; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 .navbar a:hover { background: transparent; color: #e9a18b; }
-.hero { max-width: 1240px; min-height: 480px; margin: 32px auto 72px; padding: 0; position: relative; overflow: hidden; background: #dfe5d9; text-align: left; }
+.hero { width: 100%; max-width: none; min-height: 480px; margin: 32px 0 72px; padding: 0; position: relative; overflow: hidden; background: #dfe5d9; text-align: left; }
 .hero-image { position: absolute; inset: 0 0 0 39%; background: linear-gradient(90deg, #dfe5d9 0%, rgba(223,229,217,.2) 42%), url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1400&q=85') center/cover; }
 .hero-image span { display: none; }
 .hero-content { position: relative; z-index: 1; width: 53%; padding: 84px 0 84px 8%; }
@@ -452,9 +452,9 @@ footer p { color: #b9c0b8; font-size: 12px; }
     .header-links { gap: 10px; }
     .navbar { gap: 18px; overflow-x: auto; padding: 0 16px; }
     .navbar a { white-space: nowrap; font-size: 10px; }
-    .hero { min-height: 620px; margin: 20px 16px 54px; background: #dfe5d9; }
-    .hero-image { inset: auto 0 0; height: 40%; background: linear-gradient(90deg, rgba(223,229,217,.12), rgba(223,229,217,.12)), url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85') center/cover; }
-    .hero-content { width: 100%; min-height: 60%; padding: 44px 28px 34px; background: #dfe5d9; }
+    .hero { min-height: 640px; margin: 20px 0 54px; background: #dfe5d9; }
+    .hero-image { inset: auto 0 0; height: 43%; background: linear-gradient(180deg, rgba(223,229,217,.08), rgba(29,37,34,.12)), url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85') center/cover; }
+    .hero-content { width: 100%; min-height: 57%; padding: 44px 28px 34px; background: #dfe5d9; }
     .hero-content h1 { max-width: 390px; margin: 14px 0 18px; font-size: 42px; line-height: 1.04; }
     .hero-content p { max-width: 320px; }
     .page-section { margin: 0 16px 54px; }
