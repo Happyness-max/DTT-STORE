@@ -1,39 +1,58 @@
--- Run this after schema.sql to add the starter DTT catalog.
+-- Run after schema.sql. Replaces the starter catalog with DTT's requested product range.
+insert into public.categories (name, slug) values
+  ('Accessories', 'accessories')
+on conflict (slug) do nothing;
+
+-- Remove old products when no order history depends on them. Keep ordered products hidden.
+delete from public.product_images
+where product_id in (
+  select p.id from public.products p
+  where not exists (select 1 from public.order_items oi where oi.product_id = p.id)
+);
+delete from public.products p
+where not exists (select 1 from public.order_items oi where oi.product_id = p.id);
+update public.products set is_active = false, updated_at = now();
+
 insert into public.products (category_id, name, slug, description, price, stock, is_featured)
-select c.id, seed.name, seed.slug, seed.description, seed.price, seed.stock, seed.is_featured
+select c.id, seed.name, seed.slug, seed.description, seed.price, seed.stock, false
 from (values
-  ('Fashion', 'Essential cotton shirt', 'essential-cotton-shirt', 'A relaxed everyday layer made from soft, breathable cotton. Easy to wear, easy to keep.', 29.00, 24, true),
-  ('Decor', 'Sculptural everyday vase', 'sculptural-everyday-vase', 'A tactile ceramic vase with a quiet silhouette, made to bring shape and warmth to your space.', 42.00, 12, true),
-  ('Beauty', 'Daily glow beauty set', 'daily-glow-beauty-set', 'A simple three-piece routine for fresh, comfortable skin from morning through evening.', 36.00, 18, false),
-  ('Jewelry', 'Minimal gold hoops', 'minimal-gold-hoops', 'Lightweight hoops with a clean polished finish that works from weekday plans to late dinners.', 24.00, 30, false),
-  ('Perfumes', 'Cedar and fig fragrance', 'cedar-and-fig-fragrance', 'A warm, balanced scent with crisp fig, cedarwood and a softly grounded finish.', 48.00, 15, true),
-  ('Fashion', 'Soft leather crossbody bag', 'soft-leather-crossbody-bag', 'A compact leather companion with enough room for the things you reach for every day.', 64.00, 9, false),
-  ('Food', 'Hand-finished chocolate box', 'hand-finished-chocolate-box', 'A small box of beautifully finished chocolates for gifting, sharing or keeping to yourself.', 18.00, 40, false),
-  ('Beauty', 'Calm skin care trio', 'calm-skin-care-trio', 'A gentle trio designed to leave your daily routine feeling clear, calm and uncomplicated.', 39.00, 20, false)
-) as seed(category_name, name, slug, description, price, stock, is_featured)
+  ('Food', 'Cakes and pastries', 'cakes-and-pastries', 'Add product description.', 0.00, 0),
+  ('Food', 'Food trays or food bowls', 'food-trays-or-food-bowls', 'Add product description.', 0.00, 0),
+  ('Jewelry', 'Jewelry', 'jewelry', 'Add product description.', 0.00, 0),
+  ('Beauty', 'Lip gloss or lip balm', 'lip-gloss-or-lip-balm', 'Add product description.', 0.00, 0),
+  ('Accessories', 'Hair accessories', 'hair-accessories', 'Add product description.', 0.00, 0),
+  ('Fashion', 'Dresses and outfits', 'dresses-and-outfits', 'Add product description.', 0.00, 0),
+  ('Perfumes', 'Perfumes and body spray', 'perfumes-and-body-spray', 'Add product description.', 0.00, 0),
+  ('Accessories', 'Wrist watches', 'wrist-watches', 'Add product description.', 0.00, 0),
+  ('Decor', 'Room and wall decor', 'room-and-wall-decor', 'Add product description.', 0.00, 0),
+  ('Accessories', 'Tattoo stickers', 'tattoo-stickers', 'Add product description.', 0.00, 0),
+  ('Gifts', 'Money bouquet', 'money-bouquet', 'Add product description.', 0.00, 0),
+  ('Gifts', 'Birthday and gift packages', 'birthday-and-gift-packages', 'Add product description.', 0.00, 0),
+  ('Beauty', 'Face, under-eye and lip masks', 'face-under-eye-and-lip-masks', 'Add product description.', 0.00, 0),
+  ('Gadgets', 'Mini fan', 'mini-fan', 'Add product description.', 0.00, 0),
+  ('Gadgets', 'Water bottles and fancy cups', 'water-bottles-and-fancy-cups', 'Add product description.', 0.00, 0),
+  ('Gadgets', 'Tripod', 'tripod', 'Add product description.', 0.00, 0),
+  ('Decor', 'Fancy mirrors', 'fancy-mirrors', 'Add product description.', 0.00, 0)
+) as seed(category_name, name, slug, description, price, stock)
 join public.categories c on c.name = seed.category_name
 on conflict (slug) do update set
+  category_id = excluded.category_id,
   name = excluded.name,
   description = excluded.description,
   price = excluded.price,
   stock = excluded.stock,
-  is_featured = excluded.is_featured,
+  is_active = true,
   updated_at = now();
 
 insert into public.product_images (product_id, image_url, alt_text, sort_order)
-select p.id, image.image_url, image.alt_text, 0
-from (values
-  ('essential-cotton-shirt', 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85', 'Essential cotton shirt'),
-  ('sculptural-everyday-vase', 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=900&q=85', 'Sculptural everyday vase'),
-  ('daily-glow-beauty-set', 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=85', 'Daily glow beauty set'),
-  ('minimal-gold-hoops', 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=900&q=85', 'Minimal gold hoops'),
-  ('cedar-and-fig-fragrance', 'https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?auto=format&fit=crop&w=900&q=85', 'Cedar and fig fragrance'),
-  ('soft-leather-crossbody-bag', 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=900&q=85', 'Soft leather crossbody bag'),
-  ('hand-finished-chocolate-box', 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=85', 'Hand-finished chocolate box'),
-  ('calm-skin-care-trio', 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=900&q=85', 'Calm skin care trio')
-) as image(slug, image_url, alt_text)
-join public.products p on p.slug = image.slug
-where not exists (
-  select 1 from public.product_images existing
-  where existing.product_id = p.id and existing.image_url = image.image_url
+select p.id, 'https://placehold.co/900x1100/e8e1d4/1d2522?text=Add+product+image', p.name, 0
+from public.products p
+where p.slug in (
+  'cakes-and-pastries', 'food-trays-or-food-bowls', 'jewelry', 'lip-gloss-or-lip-balm',
+  'hair-accessories', 'dresses-and-outfits', 'perfumes-and-body-spray', 'wrist-watches',
+  'room-and-wall-decor', 'tattoo-stickers', 'money-bouquet', 'birthday-and-gift-packages',
+  'face-under-eye-and-lip-masks', 'mini-fan', 'water-bottles-and-fancy-cups', 'tripod', 'fancy-mirrors'
+)
+and not exists (
+  select 1 from public.product_images existing where existing.product_id = p.id
 );
