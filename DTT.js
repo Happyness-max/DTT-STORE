@@ -336,8 +336,9 @@ function resetProductForm() {
     const form = document.getElementById('productForm');
     if (!form) return;
     form.reset();
-    form.id.value = '';
+    form.elements.id.value = '';
     form.is_active.checked = true;
+    document.getElementById('variationList')?.replaceChildren();
     document.getElementById('productSaveButton').textContent = 'Add product';
     document.getElementById('productFormTitle').textContent = 'Add a product';
     updateProductImagePreview('');
@@ -364,6 +365,28 @@ async function uploadProductImage(file, slug) {
     return supabaseClient.storage.from('product-images').getPublicUrl(path).data.publicUrl;
 }
 
+async function uploadProductImages(files, slug) {
+    return Promise.all(Array.from(files).map(file => uploadProductImage(file, slug)));
+}
+
+function addVariationRow(values = {}) {
+    const list = document.getElementById('variationList');
+    if (!list) return;
+    const row = document.createElement('div');
+    row.className = 'variation-row';
+    row.innerHTML = `<input name="variation_name" placeholder="Option (e.g. Color)" value="${escapeHtml(values.name || '')}"><input name="variation_value" placeholder="Value (e.g. Black)" value="${escapeHtml(values.value || '')}"><input name="variation_stock" type="number" min="0" placeholder="Stock" value="${values.stock ?? ''}"><button type="button" class="table-action danger remove-variation">Remove</button>`;
+    row.querySelector('.remove-variation').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+}
+
+function getVariationRows() {
+    return Array.from(document.querySelectorAll('.variation-row')).map(row => ({
+        name: row.querySelector('[name="variation_name"]').value.trim(),
+        value: row.querySelector('[name="variation_value"]').value.trim(),
+        stock: Number(row.querySelector('[name="variation_stock"]').value || 0)
+    })).filter(variation => variation.name && variation.value);
+}
+
 async function uploadSiteAsset(file, name) {
     if (file.size > 5 * 1024 * 1024) throw new Error('Please choose an image smaller than 5 MB.');
     const extension = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'png';
@@ -380,7 +403,7 @@ function uniqueUploadId() {
 
 function fillProductForm(product) {
     const form = document.getElementById('productForm');
-    form.id.value = product.id;
+    form.elements.id.value = product.id;
     form.name.value = product.name;
     form.description.value = product.description || '';
     form.price.value = product.price;
@@ -409,10 +432,21 @@ async function initializeAdminPage() {
         return;
     }
     const priceField = document.querySelector('#productForm [name="price"]');
+    const imageInput = document.getElementById('productImageFile');
+    imageInput?.setAttribute('multiple', 'multiple');
+    imageInput?.closest('.upload-field')?.childNodes[0] && (imageInput.closest('.upload-field').childNodes[0].textContent = 'Upload images from device');
     if (priceField && !document.querySelector('#productForm [name="compare_at_price"]')) {
         const label = document.createElement('label');
         label.innerHTML = 'Original price <span class="field-hint">optional, for sale badges</span><input name="compare_at_price" type="number" min="0" step="0.01" placeholder="Before sale price">';
         priceField.closest('label')?.after(label);
+    }
+    const productForm = document.getElementById('productForm');
+    if (productForm && !document.getElementById('variationList')) {
+        const variations = document.createElement('div');
+        variations.className = 'settings-section-label';
+        variations.innerHTML = 'Variations <button type="button" class="text-button" id="addVariationButton">Add variation +</button><div id="variationList" class="variation-list"></div>';
+        productForm.querySelector('.product-form-main')?.after(variations);
+        document.getElementById('addVariationButton').addEventListener('click', () => addVariationRow());
     }
     document.getElementById('adminName').textContent = (profile.full_name || 'admin').split(' ')[0];
     const deliveryTab = document.querySelector('[data-tab="delivery"]');
@@ -467,7 +501,10 @@ async function initializeAdminPage() {
     document.getElementById('productCategory').innerHTML = (categoryResult.data || []).map(category => `<option value="${category.id}">${category.name}</option>`).join('');
     document.querySelectorAll('[data-product-action="edit"]').forEach(button => button.addEventListener('click', () => {
         const product = safeProducts.find(item => String(item.id) === button.dataset.productId);
-        if (product) fillProductForm({ ...product, image_url: product.product_images?.sort((first, second) => first.sort_order - second.sort_order)[0]?.image_url || '' });
+        if (product) {
+            fillProductForm({ ...product, image_url: product.product_images?.sort((first, second) => first.sort_order - second.sort_order)[0]?.image_url || '' });
+            (product.product_variations || []).forEach(addVariationRow);
+        }
     }));
     document.querySelectorAll('[data-product-action="delete"]').forEach(button => button.addEventListener('click', async () => {
         if (!window.confirm('Delete this product? This cannot be undone.')) return;
@@ -482,9 +519,9 @@ async function initializeAdminPage() {
         event.preventDefault();
         const form = event.target;
         const saveButton = document.getElementById('productSaveButton');
-        const values = Object.fromEntries(new FormData(form));
-        const selectedFile = document.getElementById('productImageFile').files[0];
-        if (!selectedFile && !values.image_url.trim()) {
+            const values = Object.fromEntries(new FormData(form));
+        const selectedFiles = document.getElementById('productImageFile').files;
+        if (!selectedFiles.length && !values.image_url.trim()) {
             setFormMessage('productMessage', 'Upload an image or provide an image URL.');
             return;
         }
@@ -497,7 +534,7 @@ async function initializeAdminPage() {
         const productData = { name: values.name.trim(), slug, description: values.description.trim(), price: Number(values.price), compare_at_price: compareAtPrice, stock: Number(values.stock), category_id: Number(values.category_id), is_active: form.is_active.checked, updated_at: new Date().toISOString() };
         saveButton.disabled = true;
         try {
-            if (selectedFile) values.image_url = await uploadProductImage(selectedFile, slug);
+            if (selectedFiles.length) values.image_urls = await uploadProductImages(selectedFiles, slug);
         } catch (error) {
             setFormMessage('productMessage', error.message || 'The image could not be uploaded.');
             saveButton.disabled = false;
@@ -514,9 +551,17 @@ async function initializeAdminPage() {
         }
         const savedId = productId || result.data.id;
         await supabaseClient.from('product_images').delete().eq('product_id', savedId);
-        const imageResult = await supabaseClient.from('product_images').insert({ product_id: savedId, image_url: values.image_url.trim(), alt_text: values.name.trim(), sort_order: 0 });
+        const imageUrls = values.image_urls || [values.image_url.trim()];
+        const imageResult = await supabaseClient.from('product_images').insert(imageUrls.map((imageUrl, index) => ({ product_id: savedId, image_url: imageUrl, alt_text: values.name.trim(), sort_order: index })));
         if (imageResult.error) {
             setFormMessage('productMessage', imageResult.error.message);
+            saveButton.disabled = false;
+            return;
+        }
+        await supabaseClient.from('product_variations').delete().eq('product_id', savedId);
+        const variationResult = await supabaseClient.from('product_variations').insert(getVariationRows().map(variation => ({ product_id: savedId, name: variation.name, value: variation.value, stock: variation.stock })));
+        if (variationResult.error) {
+            setFormMessage('productMessage', variationResult.error.message);
             saveButton.disabled = false;
             return;
         }
@@ -634,6 +679,8 @@ function mapDatabaseProduct(product) {
         compareAtPrice: product.compare_at_price ? Number(product.compare_at_price) : null,
         isFeatured: Boolean(product.is_featured),
         image: image?.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85',
+        images: (product.product_images || []).sort((first, second) => first.sort_order - second.sort_order).map(item => item.image_url),
+        variations: product.product_variations || [],
         description: product.description || 'A considered find from the DTT collection.'
     };
 }
@@ -642,7 +689,7 @@ async function loadProductsFromSupabase() {
     if (!supabaseClient) return;
     const { data, error } = await supabaseClient
         .from('products')
-        .select('id, name, description, price, compare_at_price, is_featured, categories(name), product_images(image_url, alt_text, sort_order)')
+        .select('id, name, description, price, compare_at_price, is_featured, categories(name), product_images(image_url, alt_text, sort_order), product_variations(id, name, value, stock, price_adjustment)')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
     if (error || !data?.length) return;
@@ -947,18 +994,47 @@ function renderProductDetail() {
         return;
     }
     document.title = `DTT | ${product.name}`;
+    const gallery = product.images?.length ? product.images : [product.image];
     container.innerHTML = `
-        <div class="product-detail-image"><img src="${product.image}" alt="${product.name}"></div>
+        <div class="product-detail-image"><img id="productMainImage" src="${gallery[0]}" alt="${product.name}"><div class="product-thumbnails">${gallery.map((image, index) => `<button type="button" class="product-thumbnail ${index === 0 ? 'is-active' : ''}" data-image="${image}"><img src="${image}" alt="${product.name} view ${index + 1}"></button>`).join('')}</div></div>
         <div class="product-detail-copy">
             <p class="eyebrow">${product.category}</p>
             <h1>${product.name}</h1>
             <p class="detail-price" data-price="${product.price}">${formatMoney(product.price)}</p>
             <p class="detail-description">${product.description}</p>
             <div class="detail-meta"><span>In stock</span><span>Ships in 2-4 days</span></div>
+            ${product.variations?.length ? `<div class="variation-picker"><label for="productVariation">Choose an option</label><select id="productVariation">${product.variations.map(variation => `<option value="${variation.id}">${variation.name}: ${variation.value} (${variation.stock} available)</option>`).join('')}</select></div>` : ''}
             <button type="button" class="primary-button add-to-cart" id="addToCart">Add to cart <span aria-hidden="true">&#8594;</span></button>
             <p class="cart-message" id="cartMessage" role="status" aria-live="polite"></p>
         </div>`;
+    container.querySelectorAll('.product-thumbnail').forEach(button => button.addEventListener('click', () => {
+        document.getElementById('productMainImage').src = button.dataset.image;
+        container.querySelectorAll('.product-thumbnail').forEach(item => item.classList.remove('is-active'));
+        button.classList.add('is-active');
+    }));
+    loadProductReviews(product.id);
     document.getElementById('addToCart').addEventListener('click', () => addToCart(product.id));
+}
+
+async function loadProductReviews(productId) {
+    const container = document.getElementById('productReviews');
+    if (!container || !supabaseClient) return;
+    const { data: reviews } = await supabaseClient.from('reviews').select('rating, title, body, created_at, profiles(full_name)').eq('product_id', productId).order('created_at', { ascending: false });
+    container.innerHTML = reviews?.length ? reviews.map(review => `<article class="review"><div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div><h3>${escapeHtml(review.title || 'Verified purchase')}</h3><p>${escapeHtml(review.body)}</p><span>By ${escapeHtml(review.profiles?.full_name || 'DTT shopper')}</span></article>`).join('') : '<p class="muted-copy">No reviews yet. Be the first verified buyer to share your experience.</p>';
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    const { data: deliveredPurchase } = await supabaseClient.from('order_items').select('id, orders!inner(user_id, status)').eq('product_id', productId).eq('orders.user_id', session.user.id).eq('orders.status', 'delivered').maybeSingle();
+    if (!deliveredPurchase) return;
+    const { data: existingReview } = await supabaseClient.from('reviews').select('id').eq('product_id', productId).eq('user_id', session.user.id).maybeSingle();
+    if (existingReview) return;
+    document.getElementById('reviewFormMount').innerHTML = `<form id="reviewForm" class="review-form"><p class="eyebrow">Verified purchase</p><h3>Share your experience</h3><label>Rating<select name="rating"><option value="5">5 - Excellent</option><option value="4">4 - Good</option><option value="3">3 - Average</option><option value="2">2 - Below average</option><option value="1">1 - Poor</option></select></label><label>Title<input name="title" maxlength="100" placeholder="A short summary"></label><label>Review<textarea name="body" rows="4" maxlength="1000" placeholder="Tell other shoppers what you think." required></textarea></label><button class="primary-button" type="submit">Submit review</button><p class="form-message" id="reviewMessage" role="status"></p></form>`;
+    document.getElementById('reviewForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        const values = Object.fromEntries(new FormData(event.target));
+        const { error } = await supabaseClient.from('reviews').insert({ product_id: productId, user_id: session.user.id, rating: Number(values.rating), title: values.title.trim(), body: values.body.trim() });
+        setFormMessage('reviewMessage', error ? (error.message.includes('row-level') ? 'Only customers with a delivered order can review this product.' : error.message) : 'Review submitted.', Boolean(error));
+        if (!error) loadProductReviews(productId);
+    });
 }
 
 window.onload = async function() {

@@ -302,12 +302,30 @@ body:not(.auth-page) { background: var(--paper); }
 .product-detail { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: 76px; align-items: center; margin-top: 30px; }
 .product-detail-image { background: #e5e2d9; }
 .product-detail-image img { width: 100%; height: min(620px, 65vw); display: block; object-fit: cover; }
+.product-thumbnails { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: var(--white); }
+.product-thumbnail { flex: 0 0 58px; border: 1px solid var(--line); padding: 0; background: transparent; cursor: pointer; }
+.product-thumbnail.is-active { border-color: var(--coral); }
+.product-thumbnail img { width: 56px; height: 64px; object-fit: cover; }
 .product-detail-copy h1 { max-width: 480px; margin: 10px 0 14px; font-family: 'Playfair Display', serif; font-size: clamp(40px, 5vw, 64px); line-height: 1.02; }
 .detail-price { color: var(--coral); font-size: 22px; font-weight: 700; }
 .detail-description { max-width: 420px; color: var(--muted); line-height: 1.8; }
 .detail-meta { display: flex; gap: 18px; margin: 30px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 15px 0; color: var(--muted); font-size: 11px; }
 .detail-meta span + span { border-left: 1px solid var(--line); padding-left: 18px; }
 .add-to-cart { max-width: 280px; }
+.variation-picker { display: grid; gap: 8px; max-width: 360px; margin: 24px 0; }
+.variation-picker label, .review-form label { color: var(--ink); font-size: 12px; font-weight: 700; }
+.variation-picker select, .review-form input, .review-form textarea, .review-form select { width: 100%; margin-top: 7px; border: 1px solid var(--line); padding: 12px; background: var(--white); color: var(--ink); font: inherit; outline: none; }
+.reviews-section { margin-top: 90px; }
+.reviews-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.review { border: 1px solid var(--line); background: var(--white); padding: 22px; }
+.review-stars { color: var(--coral); letter-spacing: .1em; }
+.review h3 { margin: 12px 0 8px; font-size: 15px; }
+.review p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.review span { color: var(--muted); font-size: 11px; }
+.review-form { max-width: 560px; margin-top: 28px; border: 1px solid var(--line); background: var(--white); padding: 28px; }
+.review-form h3 { margin: 5px 0 20px; font-family: 'Playfair Display', serif; font-size: 26px; }
+.review-form label { display: block; margin-top: 16px; }
+.review-form .primary-button { margin-top: 20px; max-width: 220px; }
 .cart-message { min-height: 18px; color: var(--green); font-size: 12px; }
 .empty-state { padding: 80px 0; text-align: center; }
 .empty-state h1 { font-family: 'Playfair Display', serif; font-size: 48px; }
@@ -453,6 +471,10 @@ body:not(.auth-page) { background: var(--paper); }
 .field-divider { color: var(--muted); font-size: 10px; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
 .file-url-label { margin-top: 2px; }
 .product-list-panel { margin-top: 24px; }
+.variation-list { display: grid; gap: 8px; margin-top: 16px; }
+.variation-row { display: grid; grid-template-columns: 1fr 1fr 110px auto; gap: 8px; align-items: center; }
+.variation-row input { width: 100%; border: 1px solid var(--line); padding: 10px; background: var(--white); color: var(--ink); font: inherit; font-size: 12px; }
+.variation-row .remove-variation { margin-left: 0; }
 .product-form-row { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 18px; }
 .admin-form-actions { display: flex; gap: 12px; align-items: center; }
 .admin-form-actions .primary-button { max-width: 180px; }
@@ -492,6 +514,8 @@ footer p { color: #b9c0b8; font-size: 12px; }
     .product-detail-image img { height: 100vw; max-height: 440px; }
     .product-detail-copy h1 { font-size: 46px; }
     .add-to-cart { max-width: none; }
+    .reviews-section { margin-top: 60px; }
+    .reviews-list { grid-template-columns: 1fr; }
     .account-shell { margin: 0 16px; padding: 44px 0 60px; }
     .account-heading { align-items: start; flex-direction: column; }
     .account-heading h1 { font-size: 48px; }
@@ -527,6 +551,9 @@ footer p { color: #b9c0b8; font-size: 12px; }
     .admin-title-action { max-width: none; }
     .editor-heading { flex-direction: column; gap: 8px; }
     .product-form-main { grid-template-columns: 1fr; gap: 22px; }
+    .variation-row { grid-template-columns: 1fr 1fr; }
+    .variation-row input[type="number"] { grid-column: 1; }
+    .variation-row .remove-variation { grid-column: 2; }
     .product-form-row { grid-template-columns: 1fr; gap: 0; }
     .admin-form-actions { align-items: stretch; flex-direction: column; }
     .admin-form-actions .primary-button { max-width: none; }
