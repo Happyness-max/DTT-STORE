@@ -996,7 +996,7 @@ function renderProductDetail() {
     document.title = `DTT | ${product.name}`;
     const gallery = product.images?.length ? product.images : [product.image];
     container.innerHTML = `
-        <div class="product-detail-image"><img id="productMainImage" src="${gallery[0]}" alt="${product.name}"><div class="product-thumbnails">${gallery.map((image, index) => `<button type="button" class="product-thumbnail ${index === 0 ? 'is-active' : ''}" data-image="${image}"><img src="${image}" alt="${product.name} view ${index + 1}"></button>`).join('')}</div></div>
+        <div class="product-detail-image"><img id="productMainImage" src="${gallery[0]}" alt="${product.name}">${gallery.length > 1 ? `<div class="product-thumbnails">${gallery.map((image, index) => `<button type="button" class="product-thumbnail ${index === 0 ? 'is-active' : ''}" data-image="${image}"><img src="${image}" alt="${product.name} view ${index + 1}"></button>`).join('')}</div>` : ''}</div>
         <div class="product-detail-copy">
             <p class="eyebrow">${product.category}</p>
             <h1>${product.name}</h1>
