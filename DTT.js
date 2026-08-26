@@ -20,11 +20,20 @@ function couponDiscount(coupon, subtotal) {
 
 async function loadSiteSettings() {
     if (!supabaseClient) return;
-    const { data } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url').eq('id', true).maybeSingle();
+    const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url').eq('id', true).maybeSingle();
+    if (error) {
+        const { data: paymentData } = await supabaseClient.from('site_settings').select('payment_currency, paystack_public_key, payments_enabled').eq('id', true).maybeSingle();
+        const savedSettings = JSON.parse(localStorage.getItem('dttSiteSettings') || '{}');
+        siteCurrency = paymentData?.payment_currency || savedSettings.payment_currency || siteCurrency;
+        paystackPublicKey = paymentData?.paystack_public_key || savedSettings.paystack_public_key || '';
+        paymentsEnabled = paymentData ? Boolean(paymentData.payments_enabled) : Boolean(savedSettings.payments_enabled);
+        return;
+    }
     if (!data) return;
     siteCurrency = data.payment_currency || 'USD';
     paystackPublicKey = data.paystack_public_key || '';
     paymentsEnabled = Boolean(data.payments_enabled);
+    localStorage.setItem('dttSiteSettings', JSON.stringify({ payment_currency: siteCurrency, paystack_public_key: paystackPublicKey, payments_enabled: paymentsEnabled }));
     document.querySelectorAll('[data-price]').forEach(element => { element.textContent = formatMoney(element.dataset.price); });
     if (data.seo_title) document.title = data.seo_title;
     const heroEyebrow = document.getElementById('heroEyebrow');
@@ -506,7 +515,9 @@ async function initializeAdminPage() {
         setFormMessage('settingsMessage', error ? error.message : 'Site settings saved.', Boolean(error));
     });
     document.getElementById('savePayments').addEventListener('click', async () => {
-        const { error } = await supabaseClient.from('site_settings').upsert({ id: true, paystack_public_key: document.getElementById('paystackPublicKey').value.trim(), payment_currency: document.getElementById('paymentCurrency').value.trim().toUpperCase(), payments_enabled: document.getElementById('paymentsEnabled').checked, updated_at: new Date().toISOString() });
+        const paymentSettings = { paystack_public_key: document.getElementById('paystackPublicKey').value.trim(), payment_currency: document.getElementById('paymentCurrency').value.trim().toUpperCase(), payments_enabled: document.getElementById('paymentsEnabled').checked };
+        const { error } = await supabaseClient.from('site_settings').upsert({ id: true, ...paymentSettings, updated_at: new Date().toISOString() });
+        if (!error) localStorage.setItem('dttSiteSettings', JSON.stringify(paymentSettings));
         setFormMessage('paymentsMessage', error ? error.message : 'Payment settings saved.', Boolean(error));
     });
     document.getElementById('couponForm').addEventListener('submit', async event => {
