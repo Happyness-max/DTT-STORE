@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | Welcome back</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body class="auth-page">
+
+    <!-- TOP BAR -->
+    <div class="top-bar"><span>Welcome back to DTT</span><span>Thoughtful finds, one easy checkout</span></div>
+
+    <!-- LOGIN FORM -->
+    <main class="auth-layout">
+        <section class="auth-intro">
+            <a href="index.html" class="logo">DTT</a>
+            <p class="eyebrow">Your everyday edit</p>
+            <h1>Good things are waiting.</h1>
+            <p>Sign in to keep your saved finds, orders and next great discovery in one place.</p>
+            <a href="products.html" class="text-link">Browse the collection <span aria-hidden="true">&#8594;</span></a>
+        </section>
+        <section class="auth-card" aria-labelledby="login-title">
+            <p class="eyebrow">Member access</p>
+            <h2 id="login-title">Welcome back</h2>
+            <p class="auth-subtitle">Enter your details to continue shopping.</p>
+            <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label for="loginEmail">Email address</label>
+                <input type="email" id="loginEmail" name="email" autocomplete="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <div class="label-row"><label for="loginPassword">Password</label><a href="#" id="forgotPassword">Forgot password?</a></div>
+                <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="Your password" required>
+            </div>
+            <p class="form-message" id="loginMessage" role="status" aria-live="polite"></p>
+            <button type="submit" class="primary-button">Sign in <span aria-hidden="true">&#8594;</span></button>
+            </form>
+            <p class="auth-switch">New to DTT? <a href="register.html">Create an account</a></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 DTT. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="DTT.js"></script>
+</body>
+
+</html>

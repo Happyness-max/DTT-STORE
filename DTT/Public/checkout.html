@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | Checkout</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+<body class="checkout-page">
+<div class="top-bar"><span>DTT checkout</span><span>Secure order details</span></div>
+<header class="header">
+    <a href="index.html" class="logo">DTT</a>
+    <div class="header-links"><a href="account.html">Account</a><a href="order.html">Cart <span id="cartCount">0</span></a></div>
+</header>
+<nav class="navbar" aria-label="Primary navigation">
+    <a href="index.html">Home</a><a href="products.html">Products</a><a href="categories.html">Categories</a><a href="deals.html">Deals</a><a href="order.html">Cart</a>
+</nav>
+
+<main class="checkout-shell">
+    <a href="order.html" class="back-link">&#8592; Back to cart</a>
+    <div class="checkout-heading"><p class="eyebrow">Almost yours</p><h1>Complete your order.</h1><p>Tell us where to send your DTT finds.</p></div>
+    <div class="checkout-grid">
+        <form id="checkoutForm" class="checkout-form" novalidate>
+            <h2>Shipping details</h2>
+            <div class="checkout-fields">
+                <div class="form-group"><label for="checkoutName">Full name</label><input id="checkoutName" name="name" autocomplete="name" required></div>
+                <div class="form-group"><label for="checkoutEmail">Email address</label><input id="checkoutEmail" name="email" type="email" autocomplete="email" readonly></div>
+                <div class="form-group"><label for="checkoutAddress">Street address</label><input id="checkoutAddress" name="address" autocomplete="street-address" required></div>
+                <div class="form-group"><label for="checkoutCity">City</label><input id="checkoutCity" name="city" autocomplete="address-level2" required></div>
+                <div class="form-group"><label for="checkoutPostalCode">Postal code</label><input id="checkoutPostalCode" name="postalCode" autocomplete="postal-code" required></div>
+                <div class="form-group"><label for="checkoutCountry">Country</label><input id="checkoutCountry" name="country" autocomplete="country-name" required></div>
+            </div>
+            <p class="form-message" id="checkoutMessage" role="status" aria-live="polite"></p>
+            <button type="submit" class="primary-button">Pay and place order <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <aside class="checkout-summary"><p class="eyebrow">Your order</p><h2>Order summary</h2><div id="checkoutItems"></div><div class="coupon-box"><label for="couponCode">Coupon code</label><div><input id="couponCode" placeholder="Enter code"><button type="button" id="applyCoupon">Apply</button></div><p class="form-message" id="couponMessage" role="status"></p></div><div class="checkout-total"><span>Total</span><strong id="checkoutTotal">$0.00</strong></div></aside>
+    </div>
+</main>
+<footer><h2>DTT</h2><p>Your one-stop online store.</p><div class="footer-links"><a href="index.html">Home</a><a href="products.html">Products</a><a href="categories.html">Categories</a><a href="deals.html">Deals</a><a href="order.html">Cart</a></div><p>&copy; 2026 DTT. All Rights Reserved.</p></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="DTT.js"></script>
+</body>
+</html>

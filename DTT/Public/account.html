@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | My account</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+<body class="account-page">
+<div class="top-bar"><span>Welcome to DTT</span><span>Thoughtful finds, one easy checkout</span></div>
+<header class="header">
+    <a href="index.html" class="logo">DTT</a>
+    <div class="header-links">
+        <a href="products.html">Continue shopping</a>
+        <a href="admin.html" id="adminLink" hidden>Admin console</a>
+        <a href="order.html">Cart <span id="cartCount">0</span></a>
+    </div>
+</header>
+<nav class="navbar" aria-label="Primary navigation">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="deals.html">Deals</a>
+    <a href="order.html">Order</a>
+</nav>
+
+<main class="account-shell">
+    <div class="account-heading">
+        <div>
+            <p class="eyebrow">Your DTT account</p>
+            <h1>Welcome, <span id="accountName">shopper</span>.</h1>
+            <p class="account-email" id="accountEmail"></p>
+        </div>
+        <button type="button" class="outline-button" id="signOutButton">Sign out</button>
+    </div>
+    <p class="form-message" id="accountMessage" role="status" aria-live="polite"></p>
+    <div class="account-grid">
+        <section class="account-panel account-panel-large">
+            <div class="panel-heading"><div><p class="eyebrow">Your orders</p><h2>Order history</h2></div><a href="products.html">Shop now &#8594;</a></div>
+            <div id="accountOrders" class="account-orders"><p class="muted-copy">Loading your orders...</p></div>
+        </section>
+        <section class="account-panel">
+            <p class="eyebrow">Profile</p>
+            <h2>Your details</h2>
+            <div class="profile-detail"><span>Name</span><strong id="profileName">Loading...</strong></div>
+            <div class="profile-detail"><span>Email</span><strong id="profileEmail">Loading...</strong></div>
+            <div class="profile-detail"><span>Member since</span><strong id="memberSince">Loading...</strong></div>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <h2>DTT</h2>
+    <p>Your one-stop online store.</p>
+    <div class="footer-links"><a href="index.html">Home</a><a href="products.html">Products</a><a href="categories.html">Categories</a><a href="deals.html">Deals</a><a href="order.html">Order</a></div>
+    <p>&copy; 2026 DTT. All Rights Reserved.</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="DTT.js"></script>
+</body>
+</html>

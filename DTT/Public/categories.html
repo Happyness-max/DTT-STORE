@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | Categories</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <span>Explore Our Categories</span>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+    <a href="index.html" class="logo">DTT</a>
+    <div class="header-links">
+        <a href="login.html">👤 Account</a>
+        <a href="order.html">🛒 Cart <span id="cartCount">0</span></a>
+    </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="deals.html">Deals</a>
+    <a href="order.html">Order</a>
+</nav>
+
+<!-- CATEGORIES SECTION -->
+<section class="page-section">
+    <div class="section-heading">
+        <h2>Product Categories</h2>
+    </div>
+
+    <div class="category-grid">
+        <a href="categories.html?category=food" class="category-card">
+            <span>01</span>
+            <h3>Food</h3>
+        </a>
+        <a href="categories.html?category=beauty" class="category-card">
+            <span>02</span>
+            <h3>Beauty</h3>
+        </a>
+        <a href="categories.html?category=fashion" class="category-card">
+            <span>03</span>
+            <h3>Fashion</h3>
+        </a>
+        <a href="categories.html?category=jewelry" class="category-card">
+            <span>04</span>
+            <h3>Jewelry</h3>
+        </a>
+        <a href="categories.html?category=perfume" class="category-card">
+            <span>05</span>
+            <h3>Perfumes</h3>
+        </a>
+        <a href="categories.html?category=gifts" class="category-card">
+            <span>06</span>
+            <h3>Gifts</h3>
+        </a>
+        <a href="categories.html?category=decor" class="category-card">
+            <span>07</span>
+            <h3>Decor</h3>
+        </a>
+        <a href="categories.html?category=gadgets" class="category-card">
+            <span>08</span>
+            <h3>Gadgets</h3>
+        </a>
+    </div>
+</section>
+
+<section class="page-section category-products-section">
+    <div class="section-heading"><h2 id="categoryTitle">All category products</h2><a href="products.html">View all products &#8594;</a></div>
+    <div id="categoryProducts" class="product-grid"><p class="muted-copy">Choose a category to see its products.</p></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <h2>DTT</h2>
+    <p>Your one-stop online store.</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="categories.html">Categories</a>
+        <a href="deals.html">Deals</a>
+        <a href="order.html">Order</a>
+    </div>
+    <p>© 2026 DTT. All Rights Reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="DTT.js"></script>
+
+</body>
+</html>

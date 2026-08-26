@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | Product details</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+<body>
+<div class="top-bar">
+    <span>Welcome to DTT</span>
+    <span>Thoughtful finds, one easy checkout</span>
+</div>
+
+<header class="header">
+    <a href="index.html" class="logo">DTT</a>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+        <button type="button" onclick="searchProducts()" aria-label="Search">&#8981;</button>
+    </div>
+    <div class="header-links">
+        <a href="login.html">Account</a>
+        <a href="order.html">Cart <span id="cartCount">0</span></a>
+    </div>
+</header>
+
+<nav class="navbar" aria-label="Primary navigation">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="deals.html">Deals</a>
+    <a href="order.html">Order</a>
+</nav>
+
+<main class="product-detail-page">
+    <a href="products.html" class="back-link">&#8592; Back to products</a>
+    <div id="productDetail" class="product-detail" aria-live="polite"></div>
+</main>
+
+<footer>
+    <h2>DTT</h2>
+    <p>Your one-stop online store.</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="categories.html">Categories</a>
+        <a href="deals.html">Deals</a>
+        <a href="order.html">Order</a>
+    </div>
+    <p>&copy; 2026 DTT. All Rights Reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="DTT.js"></script>
+</body>
+</html>

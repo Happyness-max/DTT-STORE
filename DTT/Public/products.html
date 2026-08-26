@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTT | Products</title>
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <span>Welcome to DTT</span>
+    <span>Quality products at affordable prices</span>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+    <a href="index.html" class="logo">DTT</a>
+    <div class="header-links">
+        <a href="login.html">👤 Account</a>
+        <a href="order.html">🛒 Cart <span id="cartCount">0</span></a>
+    </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="deals.html">Deals</a>
+    <a href="order.html">Order</a>
+</nav>
+
+<!-- PRODUCTS SECTION -->
+<section class="page-section">
+    <div class="section-heading">
+        <h2 id="productsTitle">Available Products</h2>
+    </div>
+
+    <div id="productGrid" class="product-grid">
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80" alt="Essential cotton shirt">
+            <h3>Essential cotton shirt</h3>
+            <p class="price" data-price="29">$29.00</p>
+            <a href="product.html?id=1" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=700&q=80" alt="Sculptural everyday vase">
+            <h3>Sculptural everyday vase</h3>
+            <p class="price" data-price="42">$42.00</p>
+            <a href="product.html?id=2" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&q=80" alt="Daily glow beauty set">
+            <h3>Daily glow beauty set</h3>
+            <p class="price" data-price="36">$36.00</p>
+            <a href="product.html?id=3" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=700&q=80" alt="Minimal gold hoops">
+            <h3>Minimal gold hoops</h3>
+            <p class="price" data-price="24">$24.00</p>
+            <a href="product.html?id=4" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?auto=format&fit=crop&w=700&q=80" alt="Cedar and fig fragrance">
+            <h3>Cedar and fig fragrance</h3>
+            <p class="price" data-price="48">$48.00</p>
+            <a href="product.html?id=5" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=700&q=80" alt="Soft leather crossbody bag">
+            <h3>Soft leather crossbody bag</h3>
+            <p class="price" data-price="64">$64.00</p>
+            <a href="product.html?id=6" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=700&q=80" alt="Hand-finished chocolate box">
+            <h3>Hand-finished chocolate box</h3>
+            <p class="price" data-price="18">$18.00</p>
+            <a href="product.html?id=7" class="product-button">View details &#8594;</a>
+        </div>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=80" alt="Calm skin care trio">
+            <h3>Calm skin care trio</h3>
+            <p class="price" data-price="39">$39.00</p>
+            <a href="product.html?id=8" class="product-button">View details &#8594;</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <h2>DTT</h2>
+    <p>Your one-stop online store.</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="categories.html">Categories</a>
+        <a href="deals.html">Deals</a>
+        <a href="order.html">Order</a>
+    </div>
+    <p>© 2026 DTT. All Rights Reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="DTT.js"></script>
+
+</body>
+</html>
