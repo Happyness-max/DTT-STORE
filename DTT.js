@@ -26,7 +26,7 @@ function couponDiscount(coupon, subtotal) {
 
 async function loadSiteSettings() {
     if (!supabaseClient) return;
-    const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url').eq('id', true).maybeSingle();
+    const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url, contact_email, contact_phone, contact_address, contact_hours, contact_instagram').eq('id', true).maybeSingle();
     if (error) {
         const { data: paymentData } = await supabaseClient.from('site_settings').select('payment_currency, paystack_public_key, payments_enabled').eq('id', true).maybeSingle();
         const savedSettings = JSON.parse(localStorage.getItem('dttSiteSettings') || '{}');
@@ -64,6 +64,16 @@ async function loadSiteSettings() {
         const icon = document.querySelector('link[rel="icon"]') || document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'icon' }));
         icon.href = data.favicon_url;
     }
+    const contactEmail = document.getElementById('contactEmail');
+    const contactPhone = document.getElementById('contactPhone');
+    const contactAddress = document.getElementById('contactAddress');
+    const contactHours = document.getElementById('contactHours');
+    const contactInstagram = document.getElementById('contactInstagram');
+    if (contactEmail && data.contact_email) { contactEmail.textContent = data.contact_email; contactEmail.href = `mailto:${data.contact_email}`; }
+    if (contactPhone && data.contact_phone) { contactPhone.textContent = data.contact_phone; contactPhone.href = `tel:${data.contact_phone.replace(/[^+\d]/g, '')}`; }
+    if (contactAddress && data.contact_address) contactAddress.textContent = data.contact_address;
+    if (contactHours && data.contact_hours) contactHours.textContent = data.contact_hours;
+    if (contactInstagram && data.contact_instagram) { contactInstagram.hidden = false; contactInstagram.href = data.contact_instagram; }
 }
 
 const PRODUCTS = [
@@ -399,6 +409,14 @@ async function initializeAdminPage() {
         priceField.closest('label')?.after(label);
     }
     document.getElementById('adminName').textContent = (profile.full_name || 'admin').split(' ')[0];
+    const settingsForm = document.getElementById('settingsForm');
+    if (settingsForm && !settingsForm.querySelector('[name="contact_email"]')) {
+        const section = document.createElement('div');
+        section.className = 'settings-section-label';
+        section.textContent = 'Contact details';
+        settingsForm.insertBefore(section, settingsForm.querySelector('button[type="submit"]'));
+        section.insertAdjacentHTML('afterend', '<label>Contact email<input name="contact_email" type="email" placeholder="hello@example.com"></label><label>Contact phone<input name="contact_phone" type="tel" placeholder="+234 800 000 0000"></label><label>Store address<textarea name="contact_address" rows="2" placeholder="Your store address"></textarea></label><label>Opening hours<input name="contact_hours" placeholder="Monday - Saturday, 9:00 AM - 6:00 PM"></label><label>Instagram URL<input name="contact_instagram" type="url" placeholder="https://instagram.com/..."></label>');
+    }
     const [{ data: orders }, { data: products }, { data: users }, { data: settings }, { data: coupons }] = await Promise.all([
         supabaseClient.from('orders').select('id, user_id, status, total, created_at').order('created_at', { ascending: false }),
         supabaseClient.from('products').select('id, category_id, name, slug, description, price, compare_at_price, stock, is_active, product_images(image_url, sort_order)').order('created_at', { ascending: false }),
@@ -760,6 +778,7 @@ async function initializeCheckoutPage() {
     }
     checkoutItems = items;
     document.getElementById('checkoutEmail').value = session.user.email || '';
+    document.getElementById('checkoutPhone').value = session.user.user_metadata?.phone || '';
     document.getElementById('checkoutName').value = session.user.user_metadata?.full_name || '';
     renderCheckoutTotals();
     document.getElementById('applyCoupon').addEventListener('click', applyCheckoutCoupon);
@@ -811,6 +830,7 @@ async function placeOrder(event, user, items) {
     const total = subtotal - discount;
     const address = {
         name: form.checkoutName.value.trim(),
+        phone: form.checkoutPhone.value.trim(),
         address: form.checkoutAddress.value.trim(),
         city: form.checkoutCity.value.trim(),
         postal_code: form.checkoutPostalCode.value.trim(),

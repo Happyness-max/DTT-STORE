@@ -24,6 +24,11 @@ alter table public.site_settings add column if not exists hero_description text 
 alter table public.site_settings add column if not exists hero_button_text text not null default 'SHOP NOW';
 alter table public.site_settings add column if not exists hero_button_link text not null default 'products.html';
 alter table public.site_settings add column if not exists hero_image_url text;
+alter table public.site_settings add column if not exists contact_email text not null default 'hello@dtt.store';
+alter table public.site_settings add column if not exists contact_phone text not null default '+234 000 000 0000';
+alter table public.site_settings add column if not exists contact_address text not null default 'Add your store address';
+alter table public.site_settings add column if not exists contact_hours text not null default 'Monday - Saturday, 9:00 AM - 6:00 PM';
+alter table public.site_settings add column if not exists contact_instagram text;
 alter table public.site_settings drop constraint if exists site_settings_logo_width_check;
 alter table public.site_settings add constraint site_settings_logo_width_check check (logo_width between 24 and 320);
 insert into public.site_settings (id) values (true) on conflict (id) do nothing;

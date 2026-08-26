@@ -40,7 +40,7 @@ DTT
    Open `DTT.js` and replace `SUPABASE_URL` and `SUPABASE_ANON_KEY` with the project URL and publishable anon key from Supabase Project Settings > API. Never put the service role key in browser code.
 
 4. **Database Setup**
-    Run `supabase/schema.sql` in the Supabase SQL Editor. It creates the profile trigger, product catalog, product images, orders, order items, indexes, seed categories, and row-level security policies. Then run `supabase/seed.sql` to add the starter products and images. If you ran the original schema before checkout was added, run `supabase/checkout-policies.sql` once as well. Enable email confirmation in Supabase Auth settings if you want new users to verify their address.
+   Run `supabase/schema.sql` in the Supabase SQL Editor. It creates the profile trigger, product catalog, product images, orders, order items, indexes, seed categories, and row-level security policies. Then run `supabase/seed.sql` to add the starter products and images. If you ran the original schema before checkout, admin, hero, or contact features were added, rerun `supabase/admin-migration.sql` and `supabase/checkout-policies.sql` once as well. Enable email confirmation in Supabase Auth settings if you want new users to verify their address.
 
    To enable the admin console, run `supabase/admin-migration.sql` (it is safe to rerun), create an account through `register.html`, then promote it by running the commented `update public.profiles` query at the bottom of that migration. Use a strong password you control. Open `admin.html` after promotion. The same migration adds currency, branding, coupon support, and Storage policies for logo/product uploads. If only the older migration was run, use `supabase/storage-policies.sql` for the upload fix.
 

@@ -372,6 +372,18 @@ body:not(.auth-page) { background: var(--paper); }
 .checkout-item strong { color: var(--ink); white-space: nowrap; }
 .checkout-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; font-size: 13px; }
 .checkout-total strong { font-family: 'Playfair Display', serif; font-size: 27px; }
+.contact-shell { max-width: 1080px; margin: 0 auto; padding: 72px 0 110px; }
+.contact-intro { max-width: 680px; margin-bottom: 52px; }
+.contact-intro h1 { margin: 10px 0 18px; font-family: 'Playfair Display', serif; font-size: clamp(44px, 6vw, 72px); line-height: 1; }
+.contact-intro > p:not(.eyebrow) { max-width: 530px; color: var(--muted); line-height: 1.8; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.contact-panel { border: 1px solid var(--line); background: var(--white); padding: 30px; }
+.contact-panel h2 { max-width: 400px; margin: 10px 0 24px; font-family: 'Playfair Display', serif; font-size: 30px; line-height: 1.15; }
+.contact-detail { border-top: 1px solid var(--line); padding: 18px 0; }
+.contact-detail span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; }
+.contact-detail a, .contact-detail strong { color: var(--ink); font-size: 14px; text-decoration: none; }
+.contact-detail a:hover { color: var(--coral); }
+.contact-copy { color: var(--muted); font-size: 13px; line-height: 1.7; }
 .coupon-box { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 20px; }
 .coupon-box label { color: var(--ink); font-size: 12px; font-weight: 700; }
 .coupon-box > div { display: flex; margin-top: 8px; }
@@ -490,6 +502,10 @@ footer p { color: #b9c0b8; font-size: 12px; }
     .checkout-form, .checkout-summary { padding: 22px; }
     .checkout-fields { grid-template-columns: 1fr; }
     .checkout-fields .form-group { grid-column: auto !important; }
+    .contact-shell { margin: 0 16px; padding: 44px 0 60px; }
+    .contact-intro { margin-bottom: 32px; }
+    .contact-intro h1 { font-size: 48px; }
+    .contact-grid { grid-template-columns: 1fr; }
     .admin-topbar { padding: 16px; }
     .admin-topbar > span { display: none; }
     .admin-shell { display: block; }
