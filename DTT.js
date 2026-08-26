@@ -6,6 +6,7 @@ const supabaseClient = window.supabase && SUPABASE_URL.indexOf('YOUR_') === -1
 let siteCurrency = 'USD';
 let checkoutCoupon = null;
 let checkoutItems = [];
+let checkoutDeliveryFee = 0;
 let paystackPublicKey = '';
 let paymentsEnabled = false;
 
@@ -409,6 +410,10 @@ async function initializeAdminPage() {
         priceField.closest('label')?.after(label);
     }
     document.getElementById('adminName').textContent = (profile.full_name || 'admin').split(' ')[0];
+    const deliveryTab = document.querySelector('[data-tab="delivery"]');
+    if (deliveryTab && !document.getElementById('admin-delivery')) {
+        document.querySelector('.admin-content').insertAdjacentHTML('beforeend', '<div class="admin-view" id="admin-delivery"><p class="eyebrow">Shipping</p><h1>Delivery fees</h1><p class="admin-muted">Set the delivery fee for each Nigerian state.</p><form id="deliveryForm" class="admin-panel settings-form"><label>State<input name="state" placeholder="e.g. Lagos" required></label><label>Delivery fee<input name="fee" type="number" min="0" step="0.01" placeholder="0.00" required></label><label class="check-row"><input name="is_active" type="checkbox" checked><span>Available at checkout</span></label><div class="admin-form-actions"><button class="primary-button" type="submit">Save delivery zone</button><button class="outline-button" type="button" id="deliveryCancel">Clear</button></div><p class="form-message" id="deliveryMessage" role="status"></p></form><section class="admin-panel"><div id="deliveryTable" class="admin-table-wrap"></div></section></div>');
+    }
     const settingsForm = document.getElementById('settingsForm');
     if (settingsForm && !settingsForm.querySelector('[name="contact_email"]')) {
         const section = document.createElement('div');
@@ -418,12 +423,13 @@ async function initializeAdminPage() {
         section.insertAdjacentHTML('afterend', '<label>Contact email<input name="contact_email" type="email" placeholder="hello@example.com"></label><label>Contact phone<input name="contact_phone" type="tel" placeholder="+234 800 000 0000"></label><label>Store address<textarea name="contact_address" rows="2" placeholder="Your store address"></textarea></label><label>Opening hours<input name="contact_hours" placeholder="Monday - Saturday, 9:00 AM - 6:00 PM"></label><label>Instagram URL<input name="contact_instagram" type="url" placeholder="https://instagram.com/..."></label>');
     }
     const [{ data: orders }, { data: products }, { data: users }, { data: settings }, { data: coupons }] = await Promise.all([
-        supabaseClient.from('orders').select('id, user_id, status, total, created_at').order('created_at', { ascending: false }),
+        supabaseClient.from('orders').select('id, user_id, status, total, shipping_address, created_at').order('created_at', { ascending: false }),
         supabaseClient.from('products').select('id, category_id, name, slug, description, price, compare_at_price, stock, is_active, product_images(image_url, sort_order)').order('created_at', { ascending: false }),
         supabaseClient.from('profiles').select('id, full_name, role, created_at').order('created_at', { ascending: false }),
         supabaseClient.from('site_settings').select('*').eq('id', true).maybeSingle(),
         supabaseClient.from('coupons').select('*').order('created_at', { ascending: false })
     ]);
+    const { data: deliveryZones } = await supabaseClient.from('delivery_zones').select('*').order('state');
     const safeOrders = orders || [];
     const safeProducts = products || [];
     const safeUsers = users || [];
@@ -432,13 +438,20 @@ async function initializeAdminPage() {
     document.getElementById('metricUsers').textContent = safeUsers.length;
     document.getElementById('metricProducts').textContent = safeProducts.length;
     const orderStatuses = ['pending', 'confirmed', 'declined', 'on the way', 'delivered'];
-    const orderRows = safeOrders.map(order => `<tr><td>#${order.id.slice(0, 8)}</td><td>${order.user_id.slice(0, 8)}</td><td>$${Number(order.total).toFixed(2)}</td><td><select class="status-select" data-order-id="${order.id}">${orderStatuses.map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></td><td>${new Date(order.created_at).toLocaleDateString()}</td></tr>`);
+    const orderRows = safeOrders.map(order => { const address = order.shipping_address || {}; const deliveryAddress = [address.name, address.phone, address.address, address.city, address.state, address.postal_code, address.country].filter(Boolean).join(', '); return `<tr><td>#${order.id.slice(0, 8)}</td><td>${order.user_id.slice(0, 8)}</td><td>$${Number(order.total).toFixed(2)}</td><td><span class="admin-address">${deliveryAddress || 'No address provided'}</span></td><td><select class="status-select" data-order-id="${order.id}">${orderStatuses.map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></td><td>${new Date(order.created_at).toLocaleDateString()}</td></tr>`; });
     const productRows = safeProducts.map(product => `<tr><td>${product.name}</td><td>$${Number(product.price).toFixed(2)}</td><td>${product.stock}</td><td>${product.is_active ? 'Active' : 'Hidden'}</td><td><button class="table-action" data-product-action="edit" data-product-id="${product.id}">Edit</button><button class="table-action danger" data-product-action="delete" data-product-id="${product.id}">Delete</button></td></tr>`);
     const userRows = safeUsers.map(user => `<tr><td>${user.full_name}</td><td>${user.id.slice(0, 8)}</td><td>${user.role}</td><td>${new Date(user.created_at).toLocaleDateString()}</td></tr>`);
-    document.getElementById('overviewOrders').innerHTML = adminTable(['Order', 'User', 'Total', 'Status', 'Date'], orderRows.slice(0, 5));
-    document.getElementById('ordersTable').innerHTML = adminTable(['Order', 'User', 'Total', 'Status', 'Date'], orderRows);
+    document.getElementById('overviewOrders').innerHTML = adminTable(['Order', 'User', 'Total', 'Delivery address', 'Status', 'Date'], orderRows.slice(0, 5));
+    document.getElementById('ordersTable').innerHTML = adminTable(['Order', 'User', 'Total', 'Delivery address', 'Status', 'Date'], orderRows);
     document.getElementById('productsTable').innerHTML = adminTable(['Product', 'Price', 'Stock', 'Visibility', 'Actions'], productRows);
     document.getElementById('usersTable').innerHTML = adminTable(['Name', 'User ID', 'Role', 'Joined'], userRows);
+    const zones = deliveryZones || [];
+    document.getElementById('deliveryTable').innerHTML = adminTable(['State', 'Fee', 'Status', 'Actions'], zones.map(zone => `<tr><td>${zone.state}</td><td>${formatMoney(zone.fee)}</td><td>${zone.is_active ? 'Active' : 'Hidden'}</td><td><button class="table-action" data-zone-edit="${zone.id}">Edit</button><button class="table-action danger" data-zone-delete="${zone.id}">Delete</button></td></tr>`));
+    const deliveryForm = document.getElementById('deliveryForm');
+    deliveryForm.addEventListener('submit', async event => { event.preventDefault(); const values = Object.fromEntries(new FormData(deliveryForm)); const { error } = await supabaseClient.from('delivery_zones').upsert({ state: values.state.trim(), fee: Number(values.fee), is_active: deliveryForm.is_active.checked, updated_at: new Date().toISOString() }, { onConflict: 'state' }); setFormMessage('deliveryMessage', error ? error.message : 'Delivery fee saved.', Boolean(error)); if (!error) window.location.reload(); });
+    document.getElementById('deliveryCancel').addEventListener('click', () => deliveryForm.reset());
+    document.querySelectorAll('[data-zone-edit]').forEach(button => button.addEventListener('click', () => { const zone = zones.find(item => String(item.id) === button.dataset.zoneEdit); if (zone) { deliveryForm.state.value = zone.state; deliveryForm.fee.value = zone.fee; deliveryForm.is_active.checked = zone.is_active; deliveryForm.scrollIntoView({ behavior: 'smooth' }); } }));
+    document.querySelectorAll('[data-zone-delete]').forEach(button => button.addEventListener('click', async () => { if (!window.confirm('Delete this delivery zone?')) return; const { error } = await supabaseClient.from('delivery_zones').delete().eq('id', button.dataset.zoneDelete); if (error) setFormMessage('deliveryMessage', error.message); else window.location.reload(); }));
     const couponRows = (coupons || []).map(coupon => `<tr><td>${coupon.code}</td><td>${coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : formatMoney(coupon.discount_value)}</td><td>${coupon.minimum_order ? formatMoney(coupon.minimum_order) : '-'}</td><td>${coupon.is_active ? 'Active' : 'Inactive'}</td></tr>`);
     document.getElementById('couponsTable').innerHTML = adminTable(['Code', 'Discount', 'Minimum order', 'Status'], couponRows);
     document.querySelectorAll('.status-select').forEach(select => select.addEventListener('change', async event => {
@@ -780,6 +793,15 @@ async function initializeCheckoutPage() {
     document.getElementById('checkoutEmail').value = session.user.email || '';
     document.getElementById('checkoutPhone').value = session.user.user_metadata?.phone || '';
     document.getElementById('checkoutName').value = session.user.user_metadata?.full_name || '';
+    const zoneResult = await supabaseClient.from('delivery_zones').select('state, fee').eq('is_active', true).order('state');
+    const stateSelect = document.getElementById('checkoutState');
+    if (stateSelect) {
+        stateSelect.innerHTML = '<option value="">Select your state</option>' + (zoneResult.data || []).map(zone => `<option value="${zone.state}" data-fee="${zone.fee}">${zone.state} - ${formatMoney(zone.fee)} delivery</option>`).join('');
+        stateSelect.addEventListener('change', event => {
+            checkoutDeliveryFee = Number(event.target.selectedOptions[0]?.dataset.fee || 0);
+            renderCheckoutTotals();
+        });
+    }
     renderCheckoutTotals();
     document.getElementById('applyCoupon').addEventListener('click', applyCheckoutCoupon);
     document.getElementById('checkoutForm').addEventListener('submit', event => placeOrder(event, session.user, items));
@@ -789,7 +811,9 @@ function renderCheckoutTotals() {
     const subtotal = checkoutItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     const discount = couponDiscount(checkoutCoupon, subtotal);
     document.getElementById('checkoutItems').innerHTML = checkoutItems.map(({ product, quantity }) => `<div class="checkout-item"><span>${quantity} x ${product.name}</span><strong>${formatMoney(product.price * quantity)}</strong></div>`).join('') + (discount ? `<div class="checkout-item coupon-result"><span>Coupon discount</span><strong>-${formatMoney(discount)}</strong></div>` : '');
-    document.getElementById('checkoutTotal').textContent = formatMoney(subtotal - discount);
+    document.getElementById('checkoutTotal').textContent = formatMoney(subtotal - discount + checkoutDeliveryFee);
+    const deliveryLine = document.getElementById('checkoutDeliveryFee');
+    if (deliveryLine) deliveryLine.textContent = formatMoney(checkoutDeliveryFee);
 }
 
 async function applyCheckoutCoupon() {
@@ -827,12 +851,13 @@ async function placeOrder(event, user, items) {
     button.disabled = true;
     const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     const discount = couponDiscount(checkoutCoupon, subtotal);
-    const total = subtotal - discount;
+    const total = subtotal - discount + checkoutDeliveryFee;
     const address = {
         name: form.checkoutName.value.trim(),
         phone: form.checkoutPhone.value.trim(),
         address: form.checkoutAddress.value.trim(),
         city: form.checkoutCity.value.trim(),
+        state: form.checkoutState.value,
         postal_code: form.checkoutPostalCode.value.trim(),
         country: form.checkoutCountry.value.trim()
     };
