@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>DTT | Create Account</title>
+
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <a href="DTT.html" class="logo">
+            DTT
+        </a>
+
+        <div class="header-links">
+
+            <a href="DTT.html">
+                🏠 Home
+            </a>
+
+            <a href="order.html">
+                🛒 Cart
+                <span id="cartCount">0</span>
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <a href="DTT.html">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="categories.html">
+            Categories
+        </a>
+
+        <a href="deals.html">
+            🔥 Deals
+        </a>
+
+        <a href="order.html">
+            Order
+        </a>
+
+    </nav>
+
+
+    <!-- REGISTER -->
+    <section class="auth-section">
+
+        <div class="auth-box">
+
+            <h1>
+                Create Account 🎉
+            </h1>
+
+            <p>
+                Create your DTT account
+                to start shopping.
+            </p>
+
+
+            <form id="registerForm">
+
+
+                <!-- FULL NAME -->
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+
+                <!-- EMAIL -->
+
+                <label for="registerEmail">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="registerEmail"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <!-- PHONE -->
+
+                <label for="phone">
+                    Phone Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="08012345678"
+                    required
+                >
+
+
+                <!-- PASSWORD -->
+
+                <label for="registerPassword">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Create a password"
+                    minlength="6"
+                    required
+                >
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    minlength="6"
+                    required
+                >
+
+
+                <!-- BUTTON -->
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+                    CREATE ACCOUNT
+                </button>
+
+            </form>
+
+
+            <!-- MESSAGE -->
+
+            <div id="registerMessage"></div>
+
+
+            <!-- LOGIN LINK -->
+
+            <p class="auth-switch">
+
+                Already have an account?
+
+                <a href="login.html">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h2>DTT</h2>
+
+        <p>
+            Your one-stop online store.
+        </p>
+
+    </footer>
+
+
+    <script src="DTT.js"></script>
+
+</body>
+
+</html>

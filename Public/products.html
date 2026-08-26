@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DTT | Products</title>
+
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <a href="DTT.html" class="logo">DTT</a>
+
+        <div class="header-links">
+            <a href="login.html">Login</a>
+
+            <a href="register.html">Create Account</a>
+
+            <a href="order.html">
+                🛒 Cart
+                <span id="cartCount">0</span>
+            </a>
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <a href="DTT.html">Home</a>
+
+        <a href="products.html">Products</a>
+
+        <a href="categories.html">Categories</a>
+
+        <a href="deals.html">🔥 Deals</a>
+
+        <a href="order.html">Order</a>
+
+    </nav>
+
+
+    <!-- PRODUCTS -->
+    <section class="section">
+
+        <h1 class="section-title">
+            All Products
+        </h1>
+
+
+        <div class="product-grid">
+
+
+            <!-- CAKES -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/cake.jpg"
+                    class="product-image"
+                    alt="Cake"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Cakes & Pastries
+                    </small>
+
+                    <h3>Cakes</h3>
+
+                    <p class="product-price">
+                        ₦15,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 1,
+                            name: 'Cakes',
+                            price: 15000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PASTRIES -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/pastries.jpg"
+                    class="product-image"
+                    alt="Pastries"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Cakes & Pastries
+                    </small>
+
+                    <h3>Pastries</h3>
+
+                    <p class="product-price">
+                        ₦5,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 2,
+                            name: 'Pastries',
+                            price: 5000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD TRAY -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/food-tray.jpg"
+                    class="product-image"
+                    alt="Food Tray"
+                >
+
+                <div class="product-info">
+
+                    <small>Food</small>
+
+                    <h3>Food Tray</h3>
+
+                    <p class="product-price">
+                        ₦10,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 3,
+                            name: 'Food Tray',
+                            price: 10000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD BOWL -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/food-bowl.jpg"
+                    class="product-image"
+                    alt="Food Bowl"
+                >
+
+                <div class="product-info">
+
+                    <small>Food</small>
+
+                    <h3>Food Bowl</h3>
+
+                    <p class="product-price">
+                        ₦8,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 4,
+                            name: 'Food Bowl',
+                            price: 8000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- JEWELRY -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/jewelry.jpg"
+                    class="product-image"
+                    alt="Jewelry"
+                >
+
+                <div class="product-info">
+
+                    <small>Jewelry</small>
+
+                    <h3>Jewelry</h3>
+
+                    <p class="product-price">
+                        ₦7,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 5,
+                            name: 'Jewelry',
+                            price: 7000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- LIP GLOSS -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/lip-gloss.jpg"
+                    class="product-image"
+                    alt="Lip Gloss"
+                >
+
+                <div class="product-info">
+
+                    <small>Beauty</small>
+
+                    <h3>Lip Gloss</h3>
+
+                    <p class="product-price">
+                        ₦3,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 6,
+                            name: 'Lip Gloss',
+                            price: 3000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- HAIR ACCESSORIES -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/hair-accessories.jpg"
+                    class="product-image"
+                    alt="Hair Accessories"
+                >
+
+                <div class="product-info">
+
+                    <small>Accessories</small>
+
+                    <h3>Hair Accessories</h3>
+
+                    <p class="product-price">
+                        ₦2,500
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 7,
+                            name: 'Hair Accessories',
+                            price: 2500
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- OUTFITS -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/outfits.jpg"
+                    class="product-image"
+                    alt="Outfits"
+                >
+
+                <div class="product-info">
+
+                    <small>Fashion</small>
+
+                    <h3>Dresses & Outfits</h3>
+
+                    <p class="product-price">
+                        ₦15,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 8,
+                            name: 'Dresses & Outfits',
+                            price: 15000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERFUME -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/perfume.jpg"
+                    class="product-image"
+                    alt="Perfume"
+                >
+
+                <div class="product-info">
+
+                    <small>Beauty</small>
+
+                    <h3>Perfume / Body Spray</h3>
+
+                    <p class="product-price">
+                        ₦10,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 9,
+                            name: 'Perfume / Body Spray',
+                            price: 10000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- WATCH -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/wrist-watch.jpg"
+                    class="product-image"
+                    alt="Wrist Watch"
+                >
+
+                <div class="product-info">
+
+                    <small>Accessories</small>
+
+                    <h3>Wrist Watch</h3>
+
+                    <p class="product-price">
+                        ₦12,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 10,
+                            name: 'Wrist Watch',
+                            price: 12000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ROOM DECOR -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/room-decor.jpg"
+                    class="product-image"
+                    alt="Room Decor"
+                >
+
+                <div class="product-info">
+
+                    <small>Decor</small>
+
+                    <h3>Room / Wall Decor</h3>
+
+                    <p class="product-price">
+                        ₦7,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 11,
+                            name: 'Room / Wall Decor',
+                            price: 7000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TATTOO -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/tattoo.jpg"
+                    class="product-image"
+                    alt="Tattoo Stickers"
+                >
+
+                <div class="product-info">
+
+                    <small>Accessories</small>
+
+                    <h3>Tattoo Stickers</h3>
+
+                    <p class="product-price">
+                        ₦2,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 12,
+                            name: 'Tattoo Stickers',
+                            price: 2000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MONEY BOUQUET -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/money-bouquet.jpg"
+                    class="product-image"
+                    alt="Money Bouquet"
+                >
+
+                <div class="product-info">
+
+                    <small>Gifts</small>
+
+                    <h3>Money Bouquet</h3>
+
+                    <p class="product-price">
+                        ₦20,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 13,
+                            name: 'Money Bouquet',
+                            price: 20000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GIFT PACKAGE -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/gift-package.jpg"
+                    class="product-image"
+                    alt="Gift Package"
+                >
+
+                <div class="product-info">
+
+                    <small>Gifts</small>
+
+                    <h3>Birthday / Gift Package</h3>
+
+                    <p class="product-price">
+                        ₦15,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 14,
+                            name: 'Birthday / Gift Package',
+                            price: 15000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FACE MASK -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/face-mask.jpg"
+                    class="product-image"
+                    alt="Face Mask"
+                >
+
+                <div class="product-info">
+
+                    <small>Beauty</small>
+
+                    <h3>Face Mask</h3>
+
+                    <p class="product-price">
+                        ₦3,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 15,
+                            name: 'Face Mask',
+                            price: 3000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MINI FAN -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/mini-fan.jpg"
+                    class="product-image"
+                    alt="Mini Fan"
+                >
+
+                <div class="product-info">
+
+                    <small>Electronics</small>
+
+                    <h3>Mini Fan</h3>
+
+                    <p class="product-price">
+                        ₦8,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 16,
+                            name: 'Mini Fan',
+                            price: 8000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- WATER BOTTLE -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/water-bottle.jpg"
+                    class="product-image"
+                    alt="Water Bottle"
+                >
+
+                <div class="product-info">
+
+                    <small>Home</small>
+
+                    <h3>Water Bottle</h3>
+
+                    <p class="product-price">
+                        ₦6,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 17,
+                            name: 'Water Bottle',
+                            price: 6000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FANCY CUP -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/fancy-cup.jpg"
+                    class="product-image"
+                    alt="Fancy Cup"
+                >
+
+                <div class="product-info">
+
+                    <small>Home</small>
+
+                    <h3>Fancy Cup</h3>
+
+                    <p class="product-price">
+                        ₦6,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 18,
+                            name: 'Fancy Cup',
+                            price: 6000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRIPOD -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/tripod.jpg"
+                    class="product-image"
+                    alt="Tripod"
+                >
+
+                <div class="product-info">
+
+                    <small>Electronics</small>
+
+                    <h3>Tripod</h3>
+
+                    <p class="product-price">
+                        ₦12,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 19,
+                            name: 'Tripod',
+                            price: 12000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- MIRROR -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/mirror.jpg"
+                    class="product-image"
+                    alt="Fancy Mirror"
+                >
+
+                <div class="product-info">
+
+                    <small>Home</small>
+
+                    <h3>Fancy Mirror</h3>
+
+                    <p class="product-price">
+                        ₦9,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 20,
+                            name: 'Fancy Mirror',
+                            price: 9000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h2>DTT</h2>
+
+        <p>
+            Your one-stop online store.
+        </p>
+
+    </footer>
+
+
+    <script src="DTT.js"></script>
+
+</body>
+
+</html>

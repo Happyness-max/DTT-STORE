@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>DTT | Order</title>
+
+    <link rel="stylesheet" href="DTT.css">
+
+</head>
+
+<body>
+
+
+<div class="top-bar">
+
+    <span>
+        DTT Shopping Cart 🛒
+    </span>
+
+</div>
+
+
+<header class="header">
+
+    <a href="DTT.html"
+       class="logo">
+        DTT
+    </a>
+
+
+    <div class="header-links">
+
+        <a href="login.html">
+            👤 Account
+        </a>
+
+    </div>
+
+</header>
+
+
+<nav class="navbar">
+
+    <a href="DTT.html">
+        Home
+    </a>
+
+    <a href="products.html">
+        Products
+    </a>
+
+    <a href="categories.html">
+        Categories
+    </a>
+
+    <a href="deals.html">
+        🔥 Deals
+    </a>
+
+    <a class="active"
+       href="order.html">
+        Order
+    </a>
+
+</nav>
+
+
+<section class="page-section">
+
+    <div class="page-title">
+
+        <h1>
+            Your Order 🛒
+        </h1>
+
+    </div>
+
+
+    <div class="order-layout">
+
+
+        <!-- CART -->
+
+        <div class="cart-box">
+
+            <h2>
+                Shopping Cart
+            </h2>
+
+
+            <div id="cartItems">
+
+                <p>
+                    Your cart is empty.
+                </p>
+
+            </div>
+
+
+            <div class="cart-total">
+
+                Total:
+
+                <strong id="cartTotal">
+                    ₦0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER DETAILS -->
+
+        <div class="order-form">
+
+            <h2>
+                Delivery Details
+            </h2>
+
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                id="customerName"
+                type="text"
+                placeholder="Enter your full name"
+            >
+
+
+            <label>
+                Phone Number
+            </label>
+
+            <input
+                id="customerPhone"
+                type="tel"
+                placeholder="08012345678"
+            >
+
+
+            <label>
+                Email
+            </label>
+
+            <input
+                id="customerEmail"
+                type="email"
+                placeholder="example@email.com"
+            >
+
+
+            <label>
+                Delivery Address
+            </label>
+
+            <textarea
+                id="customerAddress"
+                placeholder="Enter your delivery address"
+            ></textarea>
+
+
+            <label>
+                Additional Note
+            </label>
+
+            <textarea
+                id="customerNote"
+                placeholder="Any special instruction?"
+            ></textarea>
+
+
+            <button
+                class="place-order-btn"
+                onclick="placeOrder()"
+            >
+                PLACE ORDER
+            </button>
+
+
+            <div id="orderMessage"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <h2>DTT</h2>
+
+    <p>
+        Thank you for shopping with DTT.
+    </p>
+
+</footer>
+
+
+<script src="DTT.js"></script>
+
+</body>
+</html>

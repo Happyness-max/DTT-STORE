@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>DTT | Categories</title>
+
+    <link rel="stylesheet" href="DTT.css">
+
+</head>
+
+<body>
+
+
+<div class="top-bar">
+    <span>Welcome to DTT 🛍️</span>
+</div>
+
+
+<header class="header">
+
+    <a href="DTT.html"
+       class="logo">
+        DTT
+    </a>
+
+
+    <div class="search-box">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search products..."
+        >
+
+        <button onclick="searchProducts()">
+            🔍
+        </button>
+
+    </div>
+
+
+    <div class="header-links">
+
+        <a href="login.html">
+            👤 Account
+        </a>
+
+        <a href="order.html">
+            🛒 Cart
+            <span id="cartCount">0</span>
+        </a>
+
+    </div>
+
+</header>
+
+
+<nav class="navbar">
+
+    <a href="DTT.html">Home</a>
+
+    <a href="products.html">
+        Products
+    </a>
+
+    <a class="active"
+       href="categories.html">
+        Categories
+    </a>
+
+    <a href="deals.html">
+        🔥 Deals
+    </a>
+
+    <a href="order.html">
+        Order
+    </a>
+
+</nav>
+
+<section class="section categories-section">
+
+    <div class="categories-header">
+        <span>SHOP BY CATEGORY</span>
+        <h1>What are you looking for?</h1>
+        <p>Explore our different categories and find something you love.</p>
+    </div>
+
+    <div class="category-grid">
+
+        <a href="products.html?category=food" class="category-card">
+            <div class="category-icon">🍰</div>
+            <h2>Cakes & Food</h2>
+            <p>Cakes, pastries, food trays and bowls.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=beauty" class="category-card">
+            <div class="category-icon">💄</div>
+            <h2>Beauty</h2>
+            <p>Lip gloss, masks and beauty products.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=fashion" class="category-card">
+            <div class="category-icon">👗</div>
+            <h2>Fashion</h2>
+            <p>Dresses and outfits for both genders.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=jewelry" class="category-card">
+            <div class="category-icon">💎</div>
+            <h2>Jewelry</h2>
+            <p>Beautiful jewelry and accessories.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=perfume" class="category-card">
+            <div class="category-icon">🌸</div>
+            <h2>Perfumes</h2>
+            <p>Perfumes and body sprays.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=accessories" class="category-card">
+            <div class="category-icon">🎀</div>
+            <h2>Accessories</h2>
+            <p>Hair accessories, watches and more.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=gifts" class="category-card">
+            <div class="category-icon">🎁</div>
+            <h2>Gifts</h2>
+            <p>Gift packages, bouquets and birthday items.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=electronics" class="category-card">
+            <div class="category-icon">📱</div>
+            <h2>Electronics</h2>
+            <p>Mini fans, tripods and useful gadgets.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+        <a href="products.html?category=decor" class="category-card">
+            <div class="category-icon">🪞</div>
+            <h2>Home & Decor</h2>
+            <p>Fancy mirrors, room decor and more.</p>
+            <span class="category-link">Shop Now →</span>
+        </a>
+
+    </div>
+
+</section>
+
+
+    <div id="categoryProducts"
+         class="product-grid">
+    </div>
+
+</section>
+
+
+<footer>
+
+    <h2>DTT</h2>
+
+    <p>
+        Your one-stop online store.
+    </p>
+
+</footer>
+
+
+<script src="DTT.js"></script>
+
+</body>
+</html>

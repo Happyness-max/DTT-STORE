@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DTT | Deals</title>
+
+    <link rel="stylesheet" href="DTT.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <a href="DTT.html" class="logo">
+            DTT
+        </a>
+
+        <div class="header-links">
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html">
+                Create Account
+            </a>
+
+            <a href="order.html">
+                🛒 Cart
+                <span id="cartCount">0</span>
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <a href="DTT.html">
+            Home
+        </a>
+
+        <a href="products.html">
+            Products
+        </a>
+
+        <a href="categories.html">
+            Categories
+        </a>
+
+        <a href="deals.html">
+            🔥 Deals
+        </a>
+
+        <a href="order.html">
+            Order
+        </a>
+
+    </nav>
+
+
+    <!-- DEALS BANNER -->
+
+    <section class="deal-banner">
+
+        <h1>
+            🔥 HOT DEALS 🔥
+        </h1>
+
+        <p>
+            Get amazing products at special prices!
+        </p>
+
+    </section>
+
+
+    <!-- DEALS -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Today's Deals
+        </h2>
+
+
+        <div class="product-grid">
+
+
+            <!-- DEAL 1 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/cake.jpg"
+                    alt="Cake Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Cakes & Pastries
+                    </small>
+
+                    <h3>
+                        Special Cake
+                    </h3>
+
+                    <p>
+                        <del>₦18,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦15,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 101,
+                            name: 'Special Cake',
+                            price: 15000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEAL 2 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/perfume.jpg"
+                    alt="Perfume Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Beauty
+                    </small>
+
+                    <h3>
+                        Perfume / Body Spray
+                    </h3>
+
+                    <p>
+                        <del>₦13,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦10,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 102,
+                            name: 'Perfume / Body Spray',
+                            price: 10000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEAL 3 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/lip-gloss.jpg"
+                    alt="Lip Gloss Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Beauty
+                    </small>
+
+                    <h3>
+                        Lip Gloss
+                    </h3>
+
+                    <p>
+                        <del>₦4,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦3,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 103,
+                            name: 'Lip Gloss',
+                            price: 3000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEAL 4 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/mini-fan.jpg"
+                    alt="Mini Fan Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Electronics
+                    </small>
+
+                    <h3>
+                        Mini Fan
+                    </h3>
+
+                    <p>
+                        <del>₦10,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦8,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 104,
+                            name: 'Mini Fan',
+                            price: 8000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEAL 5 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/fancy-cup.jpg"
+                    alt="Fancy Cup Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Home
+                    </small>
+
+                    <h3>
+                        Fancy Cup
+                    </h3>
+
+                    <p>
+                        <del>₦8,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦6,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 105,
+                            name: 'Fancy Cup',
+                            price: 6000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- DEAL 6 -->
+
+            <div class="product-card">
+
+                <img
+                    src="images/money-bouquet.jpg"
+                    alt="Money Bouquet Deal"
+                    class="product-image"
+                >
+
+                <div class="product-info">
+
+                    <small>
+                        Gifts
+                    </small>
+
+                    <h3>
+                        Money Bouquet
+                    </h3>
+
+                    <p>
+                        <del>₦25,000</del>
+                    </p>
+
+                    <p class="product-price">
+                        ₦20,000
+                    </p>
+
+                    <button
+                        class="add-cart"
+                        onclick="addToCart({
+                            id: 106,
+                            name: 'Money Bouquet',
+                            price: 20000
+                        })"
+                    >
+                        Add to Cart
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h2>DTT</h2>
+
+        <p>
+            Your one-stop online store.
+        </p>
+
+    </footer>
+
+
+    <script src="DTT.js"></script>
+
+</body>
+
+</html>
