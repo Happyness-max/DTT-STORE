@@ -302,7 +302,7 @@ body:not(.auth-page) { background: var(--paper); }
 .product-detail { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: 76px; align-items: center; margin-top: 30px; }
 .product-detail-image { background: #e5e2d9; }
 .product-detail-image img { width: 100%; height: min(620px, 65vw); display: block; object-fit: cover; }
-.product-thumbnails { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: var(--white); }
+.product-thumbnails { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; background: var(--white); }
 .product-thumbnail { flex: 0 0 58px; border: 1px solid var(--line); padding: 0; background: transparent; cursor: pointer; }
 .product-thumbnail.is-active { border-color: var(--coral); }
 .product-thumbnail img { width: 56px; height: 64px; object-fit: cover; }

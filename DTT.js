@@ -1007,11 +1007,20 @@ function renderProductDetail() {
             <button type="button" class="primary-button add-to-cart" id="addToCart">Add to cart <span aria-hidden="true">&#8594;</span></button>
             <p class="cart-message" id="cartMessage" role="status" aria-live="polite"></p>
         </div>`;
-    container.querySelectorAll('.product-thumbnail').forEach(button => button.addEventListener('click', () => {
-        document.getElementById('productMainImage').src = button.dataset.image;
-        container.querySelectorAll('.product-thumbnail').forEach(item => item.classList.remove('is-active'));
-        button.classList.add('is-active');
-    }));
+    let galleryIndex = 0;
+    const mainImage = document.getElementById('productMainImage');
+    const setGalleryImage = index => {
+        galleryIndex = (index + gallery.length) % gallery.length;
+        mainImage.src = gallery[galleryIndex];
+        container.querySelectorAll('.product-thumbnail').forEach((item, itemIndex) => item.classList.toggle('is-active', itemIndex === galleryIndex));
+    };
+    container.querySelectorAll('.product-thumbnail').forEach((button, index) => button.addEventListener('click', () => setGalleryImage(index)));
+    let touchStartX = 0;
+    mainImage.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+    mainImage.addEventListener('touchend', event => {
+        const distance = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(distance) > 45) setGalleryImage(galleryIndex + (distance < 0 ? 1 : -1));
+    }, { passive: true });
     loadProductReviews(product.id);
     document.getElementById('addToCart').addEventListener('click', () => addToCart(product.id));
 }
