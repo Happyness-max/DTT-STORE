@@ -3,7 +3,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = window.supabase && SUPABASE_URL.indexOf('YOUR_') === -1
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
-let siteCurrency = 'USD';
+let siteCurrency = 'NGN';
 let checkoutCoupon = null;
 let checkoutItems = [];
 let checkoutDeliveryFee = 0;
@@ -42,7 +42,7 @@ async function loadSiteSettings() {
         return;
     }
     if (!data) return;
-    siteCurrency = data.payment_currency || 'USD';
+    siteCurrency = data.payment_currency || 'NGN';
     paystackPublicKey = data.paystack_public_key || '';
     paymentsEnabled = Boolean(data.payments_enabled);
     localStorage.setItem('dttSiteSettings', JSON.stringify({ payment_currency: siteCurrency, paystack_public_key: paystackPublicKey, payments_enabled: paymentsEnabled }));
@@ -307,7 +307,7 @@ async function initializeAccountPage() {
         orderList.innerHTML = '<div class="account-empty"><strong>No orders yet.</strong><span>Your next find is waiting.</span><a href="products.html">Browse products &#8594;</a></div>';
     } else {
         orderList.innerHTML = orders.map(order => `
-            <div class="order-row"><div><strong>Order #${order.id.slice(0, 8)}</strong><span>${new Date(order.created_at).toLocaleDateString()}</span></div><div><strong>$${Number(order.total).toFixed(2)}</strong><span class="order-status">${order.status}</span></div></div>`).join('');
+            <div class="order-row"><div><strong>Order #${order.id.slice(0, 8)}</strong><span>${new Date(order.created_at).toLocaleDateString()}</span></div><div><strong>${formatMoney(order.total)}</strong><span class="order-status">${order.status}</span></div></div>`).join('');
     }
 }
 
@@ -438,12 +438,12 @@ async function initializeAdminPage() {
     const safeProducts = products || [];
     const safeUsers = users || [];
     document.getElementById('metricOrders').textContent = safeOrders.length;
-    document.getElementById('metricRevenue').textContent = `$${safeOrders.reduce((sum, order) => sum + Number(order.total), 0).toFixed(2)}`;
+    document.getElementById('metricRevenue').textContent = formatMoney(safeOrders.reduce((sum, order) => sum + Number(order.total), 0));
     document.getElementById('metricUsers').textContent = safeUsers.length;
     document.getElementById('metricProducts').textContent = safeProducts.length;
     const orderStatuses = ['pending', 'confirmed', 'declined', 'on the way', 'delivered'];
     const orderRows = safeOrders.map(order => { const address = order.shipping_address || {}; const deliveryAddress = [address.name, address.phone, address.email, address.address, address.city, address.state, address.postal_code, address.country].filter(Boolean); const addressMarkup = deliveryAddress.length ? deliveryAddress.map((value, index) => `<span>${escapeHtml(value)}</span>`).join('') : '<span>No address provided</span>'; return `<tr><td>#${order.id.slice(0, 8)}</td><td>${order.user_id.slice(0, 8)}</td><td>${formatMoney(order.total)}</td><td><address class="admin-address">${addressMarkup}</address></td><td><select class="status-select" data-order-id="${order.id}">${orderStatuses.map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></td><td>${new Date(order.created_at).toLocaleDateString()}</td></tr>`; });
-    const productRows = safeProducts.map(product => `<tr><td>${product.name}</td><td>$${Number(product.price).toFixed(2)}</td><td>${product.stock}</td><td>${product.is_active ? 'Active' : 'Hidden'}</td><td><button class="table-action" data-product-action="edit" data-product-id="${product.id}">Edit</button><button class="table-action danger" data-product-action="delete" data-product-id="${product.id}">Delete</button></td></tr>`);
+    const productRows = safeProducts.map(product => `<tr><td>${product.name}</td><td>${formatMoney(product.price)}</td><td>${product.stock}</td><td>${product.is_active ? 'Active' : 'Hidden'}</td><td><button class="table-action" data-product-action="edit" data-product-id="${product.id}">Edit</button><button class="table-action danger" data-product-action="delete" data-product-id="${product.id}">Delete</button></td></tr>`);
     const userRows = safeUsers.map(user => `<tr><td>${user.full_name}</td><td>${user.id.slice(0, 8)}</td><td>${user.role}</td><td>${new Date(user.created_at).toLocaleDateString()}</td></tr>`);
     document.getElementById('overviewOrders').innerHTML = adminTable(['Order', 'User', 'Total', 'Delivery address', 'Status', 'Date'], orderRows.slice(0, 5));
     document.getElementById('ordersTable').innerHTML = adminTable(['Order', 'User', 'Total', 'Delivery address', 'Status', 'Date'], orderRows);
@@ -536,7 +536,7 @@ async function initializeAdminPage() {
         document.getElementById('paystackPublicKey').value = settings.paystack_public_key || '';
         document.getElementById('paymentCurrency').value = settings.payment_currency || 'NGN';
         document.getElementById('paymentsEnabled').checked = settings.payments_enabled;
-        document.getElementById('siteCurrency').value = settings.payment_currency || 'USD';
+        document.getElementById('siteCurrency').value = settings.payment_currency || 'NGN';
     }
     document.getElementById('settingsForm').addEventListener('submit', async event => {
         event.preventDefault();
