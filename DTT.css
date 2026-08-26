@@ -422,6 +422,8 @@ body:not(.auth-page) { background: var(--paper); }
 .status-pill { color: var(--green); text-transform: capitalize; }
 .status-select { border: 1px solid var(--line); padding: 6px 8px; background: var(--white); color: var(--green); font: inherit; font-size: 11px; text-transform: capitalize; }
 .admin-address { display: block; max-width: 260px; white-space: normal; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.admin-address span { display: block; }
+.admin-address span:first-child { color: var(--ink); font-weight: 700; }
 .settings-form { display: grid; gap: 18px; max-width: 700px; }
 .settings-form label { color: var(--ink); font-size: 12px; font-weight: 700; }
 .settings-form input, .settings-form textarea { display: block; width: 100%; margin-top: 7px; border: 1px solid var(--line); padding: 13px; background: #faf8f3; color: var(--ink); font: inherit; font-size: 13px; outline: none; }

@@ -14,6 +14,10 @@ function formatMoney(value) {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency: siteCurrency }).format(Number(value));
 }
 
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+}
+
 function refreshDisplayedPrices() {
     document.querySelectorAll('[data-price]').forEach(element => {
         element.textContent = formatMoney(element.dataset.price);
@@ -438,7 +442,7 @@ async function initializeAdminPage() {
     document.getElementById('metricUsers').textContent = safeUsers.length;
     document.getElementById('metricProducts').textContent = safeProducts.length;
     const orderStatuses = ['pending', 'confirmed', 'declined', 'on the way', 'delivered'];
-    const orderRows = safeOrders.map(order => { const address = order.shipping_address || {}; const deliveryAddress = [address.name, address.phone, address.address, address.city, address.state, address.postal_code, address.country].filter(Boolean).join(', '); return `<tr><td>#${order.id.slice(0, 8)}</td><td>${order.user_id.slice(0, 8)}</td><td>$${Number(order.total).toFixed(2)}</td><td><span class="admin-address">${deliveryAddress || 'No address provided'}</span></td><td><select class="status-select" data-order-id="${order.id}">${orderStatuses.map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></td><td>${new Date(order.created_at).toLocaleDateString()}</td></tr>`; });
+    const orderRows = safeOrders.map(order => { const address = order.shipping_address || {}; const deliveryAddress = [address.name, address.phone, address.email, address.address, address.city, address.state, address.postal_code, address.country].filter(Boolean); const addressMarkup = deliveryAddress.length ? deliveryAddress.map((value, index) => `<span>${escapeHtml(value)}</span>`).join('') : '<span>No address provided</span>'; return `<tr><td>#${order.id.slice(0, 8)}</td><td>${order.user_id.slice(0, 8)}</td><td>${formatMoney(order.total)}</td><td><address class="admin-address">${addressMarkup}</address></td><td><select class="status-select" data-order-id="${order.id}">${orderStatuses.map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}</select></td><td>${new Date(order.created_at).toLocaleDateString()}</td></tr>`; });
     const productRows = safeProducts.map(product => `<tr><td>${product.name}</td><td>$${Number(product.price).toFixed(2)}</td><td>${product.stock}</td><td>${product.is_active ? 'Active' : 'Hidden'}</td><td><button class="table-action" data-product-action="edit" data-product-id="${product.id}">Edit</button><button class="table-action danger" data-product-action="delete" data-product-id="${product.id}">Delete</button></td></tr>`);
     const userRows = safeUsers.map(user => `<tr><td>${user.full_name}</td><td>${user.id.slice(0, 8)}</td><td>${user.role}</td><td>${new Date(user.created_at).toLocaleDateString()}</td></tr>`);
     document.getElementById('overviewOrders').innerHTML = adminTable(['Order', 'User', 'Total', 'Delivery address', 'Status', 'Date'], orderRows.slice(0, 5));
@@ -855,6 +859,7 @@ async function placeOrder(event, user, items) {
     const address = {
         name: form.checkoutName.value.trim(),
         phone: form.checkoutPhone.value.trim(),
+        email: user.email,
         address: form.checkoutAddress.value.trim(),
         city: form.checkoutCity.value.trim(),
         state: form.checkoutState.value,
