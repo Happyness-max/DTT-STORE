@@ -9,6 +9,8 @@ let checkoutItems = [];
 let checkoutDeliveryFee = 0;
 let paystackPublicKey = '';
 let paymentsEnabled = false;
+let manualPaymentEnabled = false;
+let manualPaymentSettings = {};
 
 function formatMoney(value) {
     return new Intl.NumberFormat(undefined, { style: 'currency', currency: siteCurrency }).format(Number(value));
@@ -31,7 +33,7 @@ function couponDiscount(coupon, subtotal) {
 
 async function loadSiteSettings() {
     if (!supabaseClient) return;
-    const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url, contact_email, contact_phone, contact_address, contact_hours, contact_instagram').eq('id', true).maybeSingle();
+    const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, manual_payment_enabled, bank_name, bank_account_name, bank_account_number, bank_instructions, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url, contact_email, contact_phone, contact_address, contact_hours, contact_instagram').eq('id', true).maybeSingle();
     if (error) {
         const { data: paymentData } = await supabaseClient.from('site_settings').select('payment_currency, paystack_public_key, payments_enabled').eq('id', true).maybeSingle();
         const savedSettings = JSON.parse(localStorage.getItem('dttSiteSettings') || '{}');
@@ -45,6 +47,8 @@ async function loadSiteSettings() {
     siteCurrency = data.payment_currency || 'NGN';
     paystackPublicKey = data.paystack_public_key || '';
     paymentsEnabled = Boolean(data.payments_enabled);
+    manualPaymentEnabled = Boolean(data.manual_payment_enabled);
+    manualPaymentSettings = data;
     localStorage.setItem('dttSiteSettings', JSON.stringify({ payment_currency: siteCurrency, paystack_public_key: paystackPublicKey, payments_enabled: paymentsEnabled }));
     refreshDisplayedPrices();
     if (data.seo_title) document.title = data.seo_title;
@@ -469,6 +473,7 @@ async function initializeAdminPage() {
         supabaseClient.from('coupons').select('*').order('created_at', { ascending: false })
     ]);
     const { data: deliveryZones } = await supabaseClient.from('delivery_zones').select('*').order('state');
+    const { data: pendingPayments } = await supabaseClient.from('orders').select('id, total, shipping_address, payment_proof_url, created_at').eq('payment_method', 'manual_bank_transfer').eq('payment_status', 'pending').order('created_at', { ascending: false });
     const safeOrders = orders || [];
     const safeProducts = products || [];
     const safeUsers = users || [];
@@ -493,6 +498,8 @@ async function initializeAdminPage() {
     document.querySelectorAll('[data-zone-delete]').forEach(button => button.addEventListener('click', async () => { if (!window.confirm('Delete this delivery zone?')) return; const { error } = await supabaseClient.from('delivery_zones').delete().eq('id', button.dataset.zoneDelete); if (error) setFormMessage('deliveryMessage', error.message); else window.location.reload(); }));
     const couponRows = (coupons || []).map(coupon => `<tr><td>${coupon.code}</td><td>${coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : formatMoney(coupon.discount_value)}</td><td>${coupon.minimum_order ? formatMoney(coupon.minimum_order) : '-'}</td><td>${coupon.is_active ? 'Active' : 'Inactive'}</td></tr>`);
     document.getElementById('couponsTable').innerHTML = adminTable(['Code', 'Discount', 'Minimum order', 'Status'], couponRows);
+    document.getElementById('pendingPayments').innerHTML = adminTable(['Customer', 'Amount', 'Proof', 'Date', 'Action'], (pendingPayments || []).map(order => `<tr><td>${escapeHtml(order.shipping_address?.name || 'Customer')}<br><small>${escapeHtml(order.shipping_address?.phone || '')}</small></td><td>${formatMoney(order.total)}</td><td>${order.payment_proof_url ? `<a href="${order.payment_proof_url}" target="_blank" rel="noopener">View proof</a>` : 'Missing'}</td><td>${new Date(order.created_at).toLocaleDateString()}</td><td><button class="table-action" data-payment-action="paid" data-order-id="${order.id}">Confirm</button><button class="table-action danger" data-payment-action="declined" data-order-id="${order.id}">Decline</button></td></tr>`));
+    document.querySelectorAll('[data-payment-action]').forEach(button => button.addEventListener('click', async () => { const action = button.dataset.paymentAction; const update = await supabaseClient.from('orders').update({ payment_status: action === 'paid' ? 'paid' : 'failed', status: action === 'paid' ? 'confirmed' : 'declined', updated_at: new Date().toISOString() }).eq('id', button.dataset.orderId); if (!update.error) window.location.reload(); }));
     document.querySelectorAll('.status-select').forEach(select => select.addEventListener('change', async event => {
         const { error } = await supabaseClient.from('orders').update({ status: event.target.value, updated_at: new Date().toISOString() }).eq('id', event.target.dataset.orderId);
         if (error) event.target.value = 'pending';
@@ -603,7 +610,7 @@ async function initializeAdminPage() {
         setFormMessage('settingsMessage', error ? error.message : 'Site settings saved.', Boolean(error));
     });
     document.getElementById('savePayments').addEventListener('click', async () => {
-        const paymentSettings = { paystack_public_key: document.getElementById('paystackPublicKey').value.trim(), payment_currency: document.getElementById('paymentCurrency').value.trim().toUpperCase(), payments_enabled: document.getElementById('paymentsEnabled').checked };
+        const paymentSettings = { paystack_public_key: document.getElementById('paystackPublicKey').value.trim(), payment_currency: document.getElementById('paymentCurrency').value.trim().toUpperCase(), payments_enabled: document.getElementById('paymentsEnabled').checked, manual_payment_enabled: document.getElementById('manualPaymentEnabled').checked, bank_name: document.getElementById('bankName').value.trim(), bank_account_name: document.getElementById('bankAccountName').value.trim(), bank_account_number: document.getElementById('bankAccountNumber').value.trim(), bank_instructions: document.getElementById('bankInstructions').value.trim() };
         const { error } = await supabaseClient.from('site_settings').upsert({ id: true, ...paymentSettings, updated_at: new Date().toISOString() });
         if (!error) localStorage.setItem('dttSiteSettings', JSON.stringify(paymentSettings));
         setFormMessage('paymentsMessage', error ? error.message : 'Payment settings saved.', Boolean(error));
@@ -872,8 +879,52 @@ async function initializeCheckoutPage() {
         });
     }
     renderCheckoutTotals();
+    const manualPanel = document.getElementById('manualPaymentPanel');
+    const manualOption = document.querySelector('input[name="payment_method"][value="manual"]');
+    const paymentSubmit = document.querySelector('#checkoutForm > .primary-button');
+    if (manualOption) {
+        manualOption.disabled = !manualPaymentEnabled;
+        manualOption.closest('.payment-option').title = manualPaymentEnabled ? '' : 'Bank transfer is not currently available.';
+        manualOption.addEventListener('change', () => {
+            document.getElementById('paymentProof').required = true;
+            manualPanel.hidden = false;
+            paymentSubmit.hidden = true;
+            document.getElementById('bankDetails').innerHTML = `<div class="bank-detail"><span>Bank</span><strong>${escapeHtml(manualPaymentSettings.bank_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account name</span><strong>${escapeHtml(manualPaymentSettings.bank_account_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account number</span><strong>${escapeHtml(manualPaymentSettings.bank_account_number || 'Not configured')}</strong></div><p>${escapeHtml(manualPaymentSettings.bank_instructions || 'Make your transfer, then upload your proof of payment.')}</p>`;
+        });
+        document.querySelector('input[name="payment_method"][value="paystack"]').addEventListener('change', () => { manualPanel.hidden = true; paymentSubmit.hidden = false; document.getElementById('paymentProof').required = false; });
+        document.getElementById('manualPaidButton').addEventListener('click', () => submitManualPayment(session.user, items));
+    }
     document.getElementById('applyCoupon').addEventListener('click', applyCheckoutCoupon);
     document.getElementById('checkoutForm').addEventListener('submit', event => placeOrder(event, session.user, items));
+}
+
+async function submitManualPayment(user, items) {
+    const form = document.getElementById('checkoutForm');
+    const message = document.getElementById('manualPaymentMessage');
+    const proof = document.getElementById('paymentProof').files[0];
+    if (!form.checkValidity()) { message.textContent = 'Complete your delivery details first.'; message.className = 'form-message is-error'; return; }
+    if (!proof) { message.textContent = 'Upload your proof of payment first.'; message.className = 'form-message is-error'; return; }
+    if (proof.size > 8 * 1024 * 1024) { message.textContent = 'Proof must be smaller than 8 MB.'; message.className = 'form-message is-error'; return; }
+    const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const discount = couponDiscount(checkoutCoupon, subtotal);
+    const total = subtotal - discount + checkoutDeliveryFee;
+    const address = { name: form.checkoutName.value.trim(), phone: form.checkoutPhone.value.trim(), email: user.email, address: form.checkoutAddress.value.trim(), city: form.checkoutCity.value.trim(), state: form.checkoutState.value, postal_code: form.checkoutPostalCode.value.trim(), country: form.checkoutCountry.value.trim() };
+    const button = document.getElementById('manualPaidButton');
+    button.disabled = true;
+    try {
+        const { data: order, error: orderError } = await supabaseClient.from('orders').insert({ user_id: user.id, total, coupon_id: checkoutCoupon?.id || null, discount_amount: discount, payment_method: 'manual_bank_transfer', payment_status: 'pending', status: 'pending', shipping_address: address }).select('id').single();
+        if (orderError) throw orderError;
+        const extension = proof.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+        const path = `proofs/${order.id}-${uniqueUploadId()}.${extension}`;
+        const upload = await supabaseClient.storage.from('payment-proofs').upload(path, proof, { cacheControl: '3600', upsert: false });
+        if (upload.error) throw upload.error;
+        const proofUrl = supabaseClient.storage.from('payment-proofs').getPublicUrl(path).data.publicUrl;
+        const update = await supabaseClient.from('orders').update({ payment_proof_url: proofUrl }).eq('id', order.id);
+        if (update.error) throw update.error;
+        await supabaseClient.from('order_items').insert(items.map(item => ({ order_id: order.id, product_id: item.product.id, quantity: item.quantity, unit_price: item.product.price })));
+        localStorage.removeItem('dttCart');
+        window.location.href = 'account.html?payment=pending';
+    } catch (error) { message.textContent = error.message || 'Could not submit your payment proof.'; message.className = 'form-message is-error'; button.disabled = false; }
 }
 
 function renderCheckoutTotals() {

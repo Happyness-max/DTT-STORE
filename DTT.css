@@ -393,6 +393,15 @@ body:not(.auth-page) { background: var(--paper); }
 .checkout-item strong { color: var(--ink); white-space: nowrap; }
 .checkout-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; font-size: 13px; }
 .checkout-total strong { font-family: 'Playfair Display', serif; font-size: 27px; }
+.payment-methods { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 20px; }
+.payment-option { display: inline-flex; gap: 8px; align-items: center; margin: 10px 20px 4px 0; color: var(--ink); font-size: 12px; }
+.payment-option input { accent-color: var(--green); }
+.manual-payment-panel { margin-top: 18px; border: 1px solid var(--line); padding: 22px; background: #f2f7f1; }
+.manual-payment-panel > p:not(.eyebrow) { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.manual-payment-panel .upload-field { margin-top: 18px; }
+.bank-detail { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); padding: 11px 0; font-size: 12px; }
+.bank-detail span { color: var(--muted); }
+.bank-detail strong { text-align: right; }
 .contact-shell { max-width: 1080px; margin: 0 auto; padding: 72px 0 110px; }
 .contact-intro { max-width: 680px; margin-bottom: 52px; }
 .contact-intro h1 { margin: 10px 0 18px; font-family: 'Playfair Display', serif; font-size: clamp(44px, 6vw, 72px); line-height: 1; }

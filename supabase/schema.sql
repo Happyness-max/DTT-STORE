@@ -68,7 +68,11 @@ create table public.orders (
     status text not null default 'pending' check (status in ('pending', 'confirmed', 'declined', 'on the way', 'delivered')),
     total numeric(10,2) not null default 0 check (total >= 0),
     payment_reference text,
-    payment_status text not null default 'unpaid' check (payment_status in ('unpaid', 'paid', 'failed', 'refunded')),
+    payment_status text not null default 'unpaid' check (payment_status in ('pending', 'unpaid', 'paid', 'failed', 'refunded')),
+    payment_method text not null default 'paystack',
+    payment_proof_url text,
+    payment_method text not null default 'paystack',
+    payment_proof_url text,
     shipping_address jsonb not null default '{}'::jsonb,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
@@ -104,6 +108,16 @@ create table public.site_settings (
     paystack_public_key text,
     payment_currency text not null default 'NGN',
     payments_enabled boolean not null default false,
+    manual_payment_enabled boolean not null default false,
+    bank_name text,
+    bank_account_name text,
+    bank_account_number text,
+    bank_instructions text,
+    manual_payment_enabled boolean not null default false,
+    bank_name text,
+    bank_account_name text,
+    bank_account_number text,
+    bank_instructions text,
     updated_at timestamptz not null default now()
 );
 
@@ -140,6 +154,7 @@ create policy "Users read own profile" on public.profiles for select using (auth
 create policy "Users update own profile" on public.profiles for update using (auth.uid() = id);
 create policy "Users read own orders" on public.orders for select using (auth.uid() = user_id);
 create policy "Users create own orders" on public.orders for insert with check (auth.uid() = user_id);
+create policy "Users update own orders" on public.orders for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "Users read own order items" on public.order_items for select using (exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.uid()));
 create policy "Users create own order items" on public.order_items for insert with check (exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.uid()));
 create policy "Public can read active product variations" on public.product_variations for select using (is_active = true);

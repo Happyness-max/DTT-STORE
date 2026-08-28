@@ -29,6 +29,11 @@ alter table public.site_settings add column if not exists contact_phone text not
 alter table public.site_settings add column if not exists contact_address text not null default 'Add your store address';
 alter table public.site_settings add column if not exists contact_hours text not null default 'Monday - Saturday, 9:00 AM - 6:00 PM';
 alter table public.site_settings add column if not exists contact_instagram text;
+alter table public.site_settings add column if not exists manual_payment_enabled boolean not null default false;
+alter table public.site_settings add column if not exists bank_name text;
+alter table public.site_settings add column if not exists bank_account_name text;
+alter table public.site_settings add column if not exists bank_account_number text;
+alter table public.site_settings add column if not exists bank_instructions text;
 alter table public.site_settings drop constraint if exists site_settings_logo_width_check;
 alter table public.site_settings add constraint site_settings_logo_width_check check (logo_width between 24 and 320);
 insert into public.site_settings (id) values (true) on conflict (id) do nothing;
@@ -49,6 +54,8 @@ alter table public.orders add column if not exists coupon_id uuid references pub
 alter table public.orders add column if not exists discount_amount numeric(10,2) not null default 0 check (discount_amount >= 0);
 alter table public.orders add column if not exists payment_reference text;
 alter table public.orders add column if not exists payment_status text not null default 'unpaid';
+alter table public.orders add column if not exists payment_method text not null default 'paystack';
+alter table public.orders add column if not exists payment_proof_url text;
 alter table public.coupons enable row level security;
 
 create or replace function public.is_admin() returns boolean language sql security definer set search_path = public stable as $$
