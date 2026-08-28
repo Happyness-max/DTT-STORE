@@ -35,11 +35,13 @@ async function loadSiteSettings() {
     if (!supabaseClient) return;
     const { data, error } = await supabaseClient.from('site_settings').select('store_name, seo_title, seo_description, logo_url, logo_width, favicon_url, payment_currency, paystack_public_key, payments_enabled, manual_payment_enabled, bank_name, bank_account_name, bank_account_number, bank_instructions, hero_eyebrow, hero_title, hero_description, hero_button_text, hero_button_link, hero_image_url, contact_email, contact_phone, contact_address, contact_hours, contact_instagram').eq('id', true).maybeSingle();
     if (error) {
-        const { data: paymentData } = await supabaseClient.from('site_settings').select('payment_currency, paystack_public_key, payments_enabled').eq('id', true).maybeSingle();
+        const { data: paymentData } = await supabaseClient.from('site_settings').select('payment_currency, paystack_public_key, payments_enabled, manual_payment_enabled, bank_name, bank_account_name, bank_account_number, bank_instructions').eq('id', true).maybeSingle();
         const savedSettings = JSON.parse(localStorage.getItem('dttSiteSettings') || '{}');
         siteCurrency = paymentData?.payment_currency || savedSettings.payment_currency || siteCurrency;
         paystackPublicKey = paymentData?.paystack_public_key || savedSettings.paystack_public_key || '';
         paymentsEnabled = paymentData ? Boolean(paymentData.payments_enabled) : Boolean(savedSettings.payments_enabled);
+        manualPaymentEnabled = paymentData ? Boolean(paymentData.manual_payment_enabled) : false;
+        manualPaymentSettings = paymentData || {};
         refreshDisplayedPrices();
         return;
     }
@@ -883,13 +885,13 @@ async function initializeCheckoutPage() {
     const manualOption = document.querySelector('input[name="payment_method"][value="manual"]');
     const paymentSubmit = document.querySelector('#checkoutForm > .primary-button');
     if (manualOption) {
-        manualOption.disabled = !manualPaymentEnabled;
-        manualOption.closest('.payment-option').title = manualPaymentEnabled ? '' : 'Bank transfer is not currently available.';
+        manualOption.closest('.payment-option').classList.toggle('is-unavailable', !manualPaymentEnabled);
+        manualOption.closest('.payment-option').title = manualPaymentEnabled ? '' : 'Bank transfer has not been enabled by the store yet.';
         manualOption.addEventListener('change', () => {
             document.getElementById('paymentProof').required = true;
             manualPanel.hidden = false;
             paymentSubmit.hidden = true;
-            document.getElementById('bankDetails').innerHTML = `<div class="bank-detail"><span>Bank</span><strong>${escapeHtml(manualPaymentSettings.bank_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account name</span><strong>${escapeHtml(manualPaymentSettings.bank_account_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account number</span><strong>${escapeHtml(manualPaymentSettings.bank_account_number || 'Not configured')}</strong></div><p>${escapeHtml(manualPaymentSettings.bank_instructions || 'Make your transfer, then upload your proof of payment.')}</p>`;
+            document.getElementById('bankDetails').innerHTML = `<div class="bank-detail"><span>Bank</span><strong>${escapeHtml(manualPaymentSettings.bank_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account name</span><strong>${escapeHtml(manualPaymentSettings.bank_account_name || 'Not configured')}</strong></div><div class="bank-detail"><span>Account number</span><strong>${escapeHtml(manualPaymentSettings.bank_account_number || 'Not configured')}</strong></div><p>${escapeHtml(manualPaymentSettings.bank_instructions || 'Make your transfer, then upload your proof of payment.')}</p>${manualPaymentEnabled ? '' : '<p class="form-message is-error">Bank transfer is not enabled yet. Please choose Paystack or contact the store.</p>'}`;
         });
         document.querySelector('input[name="payment_method"][value="paystack"]').addEventListener('change', () => { manualPanel.hidden = true; paymentSubmit.hidden = false; document.getElementById('paymentProof').required = false; });
         document.getElementById('manualPaidButton').addEventListener('click', () => submitManualPayment(session.user, items));
@@ -902,6 +904,7 @@ async function submitManualPayment(user, items) {
     const form = document.getElementById('checkoutForm');
     const message = document.getElementById('manualPaymentMessage');
     const proof = document.getElementById('paymentProof').files[0];
+    if (!manualPaymentEnabled) { message.textContent = 'Bank transfer is not enabled by the store yet.'; message.className = 'form-message is-error'; return; }
     if (!form.checkValidity()) { message.textContent = 'Complete your delivery details first.'; message.className = 'form-message is-error'; return; }
     if (!proof) { message.textContent = 'Upload your proof of payment first.'; message.className = 'form-message is-error'; return; }
     if (proof.size > 8 * 1024 * 1024) { message.textContent = 'Proof must be smaller than 8 MB.'; message.className = 'form-message is-error'; return; }
