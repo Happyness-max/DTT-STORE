@@ -22,7 +22,8 @@ from (values
   ('Beauty', 'Lip gloss or lip balm', 'lip-gloss-or-lip-balm', 'Add product description.', 0.00, 0),
   ('Accessories', 'Hair accessories', 'hair-accessories', 'Add product description.', 0.00, 0),
   ('Fashion', 'Dresses and outfits', 'dresses-and-outfits', 'Add product description.', 0.00, 0),
-  ('Perfumes', 'Perfumes and body spray', 'perfumes-and-body-spray', 'Add product description.', 0.00, 0),
+  ('Fashion', 'Tote bags', 'tote-bags', 'Add product description.', 0.00, 0),
+  ('Perfumes', 'Perfumes, body spray and body mist', 'perfumes-body-spray-and-body-mist', 'Add product description.', 0.00, 0),
   ('Accessories', 'Wrist watches', 'wrist-watches', 'Add product description.', 0.00, 0),
   ('Decor', 'Room and wall decor', 'room-and-wall-decor', 'Add product description.', 0.00, 0),
   ('Accessories', 'Tattoo stickers', 'tattoo-stickers', 'Add product description.', 0.00, 0),
@@ -49,7 +50,7 @@ select p.id, 'https://placehold.co/900x1100/e8e1d4/1d2522?text=Add+product+image
 from public.products p
 where p.slug in (
   'cakes-and-pastries', 'food-trays-or-food-bowls', 'jewelry', 'lip-gloss-or-lip-balm',
-  'hair-accessories', 'dresses-and-outfits', 'perfumes-and-body-spray', 'wrist-watches',
+  'hair-accessories', 'dresses-and-outfits', 'tote-bags', 'perfumes-body-spray-and-body-mist', 'wrist-watches',
   'room-and-wall-decor', 'tattoo-stickers', 'money-bouquet', 'birthday-and-gift-packages',
   'face-under-eye-and-lip-masks', 'mini-fan', 'water-bottles-and-fancy-cups', 'tripod', 'fancy-mirrors'
 )

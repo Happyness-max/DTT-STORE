@@ -94,7 +94,7 @@ async function loadSiteSettings() {
 const DEFAULT_PRODUCT_IMAGE = 'https://placehold.co/900x1100/e8e1d4/1d2522?text=Add+product+image';
 const PRODUCTS = [
     ['Cakes and pastries', 'Food'], ['Food trays or food bowls', 'Food'], ['Jewelry', 'Jewelry'], ['Lip gloss or lip balm', 'Beauty'],
-    ['Hair accessories', 'Accessories'], ['Dresses and outfits', 'Fashion'], ['Perfumes and body spray', 'Perfumes'], ['Wrist watches', 'Accessories'],
+    ['Hair accessories', 'Accessories'], ['Dresses and outfits', 'Fashion'], ['Tote bags', 'Fashion'], ['Perfumes, body spray and body mist', 'Perfumes'], ['Wrist watches', 'Accessories'],
     ['Room and wall decor', 'Decor'], ['Tattoo stickers', 'Accessories'], ['Money bouquet', 'Gifts'], ['Birthday and gift packages', 'Gifts'],
     ['Face, under-eye and lip masks', 'Beauty'], ['Mini fan', 'Gadgets'], ['Water bottles and fancy cups', 'Gadgets'], ['Tripod', 'Gadgets'], ['Fancy mirrors', 'Decor']
 ].map(([name, category], index) => ({ id: index + 1, name, category, price: 0, image: DEFAULT_PRODUCT_IMAGE, description: 'Add product description.' }));
