@@ -641,7 +641,8 @@ function fetchFeaturedProducts() {
     const productGrid = document.getElementById('homeProducts');
     if (!productGrid) return;
     productGrid.innerHTML = '';
-    PRODUCTS.slice(0, 4).forEach(product => {
+        const featured = catalog.filter(product => product.isFeatured).slice(0, 4);
+        (featured.length ? featured : catalog.slice(0, 4)).forEach(product => {
         const productCard = document.createElement('div');
         productCard.className = 'product-card';
         productCard.innerHTML = `
@@ -713,7 +714,7 @@ async function loadProductsFromSupabase() {
 function renderDeals() {
     const container = document.getElementById('dealsGrid');
     if (!container) return;
-    const catalog = window.DTT_PRODUCTS || PRODUCTS;
+        const catalog = window.DTT_PRODUCTS || [];
     const deals = catalog.filter(product => (product.compareAtPrice && product.compareAtPrice > product.price) || product.isFeatured).slice(0, 12);
     if (!deals.length) {
         container.innerHTML = '<div class="empty-state"><p class="eyebrow">Coming soon</p><h1>Fresh offers are on the way.</h1><a href="products.html" class="hero-button">Browse products</a></div>';
@@ -996,7 +997,7 @@ function renderProductDetail() {
     document.title = `DTT | ${product.name}`;
     const gallery = product.images?.length ? product.images : [product.image];
     container.innerHTML = `
-        <div class="product-detail-image"><img id="productMainImage" src="${gallery[0]}" alt="${product.name}">${gallery.length > 1 ? `<div class="product-thumbnails">${gallery.map((image, index) => `<button type="button" class="product-thumbnail ${index === 0 ? 'is-active' : ''}" data-image="${image}"><img src="${image}" alt="${product.name} view ${index + 1}"></button>`).join('')}</div>` : ''}</div>
+        <div class="product-detail-image"><img id="productMainImage" src="${gallery[0]}" alt="${product.name}"></div>
         <div class="product-detail-copy">
             <p class="eyebrow">${product.category}</p>
             <h1>${product.name}</h1>
@@ -1014,7 +1015,6 @@ function renderProductDetail() {
         mainImage.src = gallery[galleryIndex];
         container.querySelectorAll('.product-thumbnail').forEach((item, itemIndex) => item.classList.toggle('is-active', itemIndex === galleryIndex));
     };
-    container.querySelectorAll('.product-thumbnail').forEach((button, index) => button.addEventListener('click', () => setGalleryImage(index)));
     let touchStartX = 0;
     mainImage.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
     mainImage.addEventListener('touchend', event => {
@@ -1037,8 +1037,14 @@ async function loadProductReviews(productId) {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return;
     const { data: deliveredPurchase, error: purchaseError } = await supabaseClient.from('order_items').select('id, orders!inner(user_id, status)').eq('product_id', productId).eq('orders.user_id', session.user.id).eq('orders.status', 'delivered').maybeSingle();
-    if (purchaseError) return;
-    if (!deliveredPurchase) return;
+    if (purchaseError) {
+        document.getElementById('reviewFormMount').innerHTML = '<p class="muted-copy">We could not verify purchase eligibility. Make sure product-content-migration.sql has been run.</p>';
+        return;
+    }
+    if (!deliveredPurchase) {
+        document.getElementById('reviewFormMount').innerHTML = '<p class="muted-copy">Only customers with a delivered order can review this product.</p>';
+        return;
+    }
     const { data: existingReview } = await supabaseClient.from('reviews').select('id').eq('product_id', productId).eq('user_id', session.user.id).maybeSingle();
     if (existingReview) return;
     document.getElementById('reviewFormMount').innerHTML = `<form id="reviewForm" class="review-form"><p class="eyebrow">Verified purchase</p><h3>Share your experience</h3><label>Rating<select name="rating"><option value="5">5 - Excellent</option><option value="4">4 - Good</option><option value="3">3 - Average</option><option value="2">2 - Below average</option><option value="1">1 - Poor</option></select></label><label>Title<input name="title" maxlength="100" placeholder="A short summary"></label><label>Review<textarea name="body" rows="4" maxlength="1000" placeholder="Tell other shoppers what you think." required></textarea></label><button class="primary-button" type="submit">Submit review</button><p class="form-message" id="reviewMessage" role="status"></p></form>`;
