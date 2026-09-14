@@ -1082,12 +1082,12 @@ function renderProductDetail() {
 async function loadProductReviews(productId) {
     const container = document.getElementById('productReviews');
     if (!container || !supabaseClient) return;
-    const { data: reviews, error: reviewsError } = await supabaseClient.from('reviews').select('rating, title, body, created_at, profiles(full_name)').eq('product_id', productId).order('created_at', { ascending: false });
+    const { data: reviews, error: reviewsError } = await supabaseClient.from('reviews').select('rating, title, body, created_at').eq('product_id', productId).order('created_at', { ascending: false });
     if (reviewsError) {
         container.innerHTML = '<p class="muted-copy">Reviews are not available yet. Run product-content-migration.sql in Supabase.</p>';
         return;
     }
-    container.innerHTML = reviews?.length ? reviews.map(review => `<article class="review"><div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div><h3>${escapeHtml(review.title || 'Verified purchase')}</h3><p>${escapeHtml(review.body)}</p><span>By ${escapeHtml(review.profiles?.full_name || 'DTT shopper')}</span></article>`).join('') : '<p class="muted-copy">No reviews yet. Be the first verified buyer to share your experience.</p>';
+    container.innerHTML = reviews?.length ? reviews.map(review => `<article class="review"><div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div><h3>${escapeHtml(review.title || 'Verified purchase')}</h3><p>${escapeHtml(review.body)}</p><span>By DTT shopper</span></article>`).join('') : '<p class="muted-copy">No reviews yet. Be the first verified buyer to share your experience.</p>';
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return;
     const { data: deliveredPurchase, error: purchaseError } = await supabaseClient.from('order_items').select('id, orders!inner(user_id, status)').eq('product_id', productId).eq('orders.user_id', session.user.id).eq('orders.status', 'delivered').maybeSingle();

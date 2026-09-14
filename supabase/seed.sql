@@ -1,6 +1,7 @@
 -- Run after schema.sql. Replaces the starter catalog with DTT's requested product range.
 insert into public.categories (name, slug) values
-  ('Accessories', 'accessories')
+  ('Accessories', 'accessories'),
+  ('Perfumes', 'perfumes')
 on conflict (slug) do nothing;
 
 -- Remove old products when no order history depends on them. Keep ordered products hidden.
