@@ -170,6 +170,14 @@ footer {
 .label-row { display: flex; justify-content: space-between; align-items: center; }
 .label-row a { font-size: 11px; }
 .form-group input[type="email"], .form-group input[type="password"], .form-group input[type="text"] { width: 100%; margin-top: 8px; padding: 14px 15px; border: 1px solid var(--line); background: #faf8f3; color: var(--ink); font: inherit; outline: none; }
+.password-field { position: relative; }
+.password-field input[type="password"] { padding-right: 48px; }
+.password-toggle { position: absolute; top: 16px; right: 8px; display: grid; place-items: center; width: 34px; height: 34px; padding: 7px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.password-toggle:hover { color: var(--green); }
+.password-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+.password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.password-toggle .password-slash { opacity: 0; }
+.password-toggle.is-visible .password-slash { opacity: 1; }
 .form-group input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,91,75,.12); }
 .check-row { display: flex; gap: 9px; align-items: flex-start; margin: 22px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .check-row input { accent-color: var(--green); margin-top: 2px; }

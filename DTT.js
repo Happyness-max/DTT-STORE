@@ -189,6 +189,17 @@ async function registerUser(event) {
 document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
 document.getElementById('registerForm')?.addEventListener('submit', registerUser);
 
+document.querySelectorAll('.password-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        const passwordInput = document.getElementById(toggle.getAttribute('aria-controls'));
+        const isVisible = passwordInput.type === 'password';
+        passwordInput.type = isVisible ? 'text' : 'password';
+        toggle.classList.toggle('is-visible', isVisible);
+        toggle.setAttribute('aria-pressed', String(isVisible));
+        toggle.setAttribute('aria-label', isVisible ? 'Hide password' : 'Show password');
+    });
+});
+
 document.getElementById('forgotPassword')?.addEventListener('click', async (event) => {
     event.preventDefault();
     const email = document.getElementById('loginEmail').value.trim().toLowerCase();
