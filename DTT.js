@@ -696,25 +696,31 @@ function mapDatabaseProduct(product) {
 }
 
 async function loadProductsFromSupabase() {
-    if (!supabaseClient) return;
+    const productGrid = document.getElementById('productGrid');
+    if (!supabaseClient) {
+        if (productGrid) productGrid.innerHTML = '<p class="muted-copy">Products are temporarily unavailable.</p>';
+        return;
+    }
     const { data, error } = await supabaseClient
         .from('products')
         .select('id, name, description, price, compare_at_price, is_featured, categories(name), product_images(image_url, alt_text, sort_order), product_variations(id, name, value, stock, price_adjustment)')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
-    if (error || !data?.length) return;
+    if (error) {
+        if (productGrid) productGrid.innerHTML = '<p class="muted-copy">Products could not be loaded. Please try again later.</p>';
+        return;
+    }
 
-    const products = data.map(mapDatabaseProduct);
-    const productGrid = document.getElementById('productGrid');
+    const products = (data || []).map(mapDatabaseProduct);
     if (productGrid) {
-        productGrid.innerHTML = products.map(product => `
+        productGrid.innerHTML = products.length ? products.map(product => `
             <div class="product-card">
                 <img src="${product.image}" alt="${product.name}">
                 <h3>${product.name}</h3>
                 <p class="price" data-price="${product.price}">${formatMoney(product.price)}</p>
                 ${productCardActions(product)}
-            </div>`).join('');
-            bindAddToCartButtons(productGrid);
+            </div>`).join('') : '<p class="muted-copy">No products are available right now.</p>';
+        if (products.length) bindAddToCartButtons(productGrid);
     }
     window.DTT_PRODUCTS = products;
     renderFeaturedProducts(products);
